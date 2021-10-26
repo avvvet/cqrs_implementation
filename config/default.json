@@ -1,0 +1,92 @@
+{
+  "server": {
+    "port": 3380,
+    "timeout": 15000
+  },
+  "exposed_server": {
+    "host": "localhost",
+    "port": 3380,
+    "protocol": "http",
+    "version": "v1"
+  },
+  "client_errors": {
+    "400": {
+      "error_code": null,
+      "log_level": "notice"
+    },
+    "401": {
+      "error_code": "UNAUTHORIZED",
+      "log_level": "notice"
+    },
+    "404": {
+      "error_code": "RESOURCE_NOT_FOUND",
+      "log_level": "notice"
+    },
+    "405": {
+      "error_code": "METHOD_NOT_SUPPORTED",
+      "log_level": "notice"
+    },
+    "406": {
+      "error_code": "CONTENT_TYPE_NOT_SUPPORTED",
+      "log_level": "notice"
+    }
+  },
+  "server_errors": [
+    500
+  ],
+  "logger": {
+    "stack": {
+      "app": "staffshift-client-management"
+    },
+    "level": "info"
+  },
+  "bDebug": false,
+  "mongo": {
+    "database_host": "mongodb://localhost:27017/staffshiftclientmanagementDev",
+    "options": {
+      "minPoolSize": 1,
+      "maxPoolSize": 10,
+      "readPreference": "secondaryPreferred"
+    }
+  },
+  "octophant_audit": {
+    "service_identifier": "",
+    "pubsub_project": {
+      "projectId": "staffshift-dev-env"
+    },
+    "pubsub_topics": [
+      {
+        "name": "staffshift.audit",
+        "subscribers": []
+      }
+    ]
+  },
+  "api_token": "SomeSecret",
+  "tracing": {
+    "key_file": "",
+    "enhanced_mongodb_reporting": false
+  },
+  "graceful_shutdown": {
+    "signals": ["SIGTERM"],
+    "http": {
+      "delay": 10000,
+      "server_close_timeout": 5000
+    },
+    "changestream": {
+      "server_close_timeout": 5000
+    }
+  },
+  "pubSubAuth": {
+    "projectId": "staffshift-dev-env"
+  },
+  "pubsub_log_level": "notice",
+  "app_domain": "ss",
+  "app_name": "client-management",
+  "ss_domain_event": {
+    "app": "client-management",
+    "jwt_secret": "SomeSecret",
+    "pod_id": 234,
+    "strict_mode": true,
+    "ss_domain_event_topics": []
+  }
+}
