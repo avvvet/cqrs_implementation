@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   description: "Staffshift Client Management API"
   version: "1.0.0"
-  title: "Staffshift Agency Management Service"
+  title: "Staffshift Management Service"
   termsOfService: "https://www.staffshift.com/#terms-and-conditions"
   contact:
     name: "Staffshift team"

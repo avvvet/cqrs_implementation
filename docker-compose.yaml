@@ -17,7 +17,6 @@ services:
     image: mountebank
     ports:
     - "2525:2525"
-    - "4000:4000"
   database:
     container_name: database
     hostname: database

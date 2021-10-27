@@ -1,4 +1,4 @@
-ARG NODE_VERSION_TAG=16.12.0
+ARG NODE_VERSION_TAG=gallium-alpine
 
 FROM node:$NODE_VERSION_TAG
 # Create the directory for our application
@@ -33,6 +33,6 @@ COPY . ./
 # Build typescript
 RUN npm run build-ts
 
-EXPOSE 3370
+EXPOSE 3380
 
 CMD ["node", "dist/http_server"]
