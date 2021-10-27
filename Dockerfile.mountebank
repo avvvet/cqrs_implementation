@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16-alpine
 # Create the directory for our application
 RUN mkdir -p /usr/src/app
 # Set the current working directory

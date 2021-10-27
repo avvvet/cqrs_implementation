@@ -1,4 +1,4 @@
-ARG NODE_VERSION_TAG=16
+ARG NODE_VERSION_TAG=16-alpine
 
 FROM node:$NODE_VERSION_TAG
 # Create the directory for our application
