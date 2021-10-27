@@ -1,4 +1,4 @@
-ARG NODE_VERSION_TAG=16.12.0
+ARG NODE_VERSION_TAG=16
 
 FROM node:$NODE_VERSION_TAG
 # Create the directory for our application
