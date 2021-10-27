@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import {assert} from 'chai';
 import sinon from 'ts-sinon';
 import {ExposedServerConfigurationInterface} from '../../src/types/ExposedServerConfigurationInterface';

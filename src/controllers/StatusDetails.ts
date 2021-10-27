@@ -1,5 +1,5 @@
 import {ServerResponse} from 'http';
-import {SwaggerRequestInterface} from '../types/SwaggerRequestInterface';
+import {SwaggerRequestInterface} from 'SwaggerRequestInterface';
 
 /**
  * Gets the status of the service
