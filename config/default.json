@@ -45,8 +45,7 @@
     "database_host": "mongodb://localhost:27017/staffshiftclientmanagementDev",
     "options": {
       "minPoolSize": 1,
-      "maxPoolSize": 10,
-      "readPreference": "secondaryPreferred"
+      "maxPoolSize": 10
     }
   },
   "octophant_audit": {
