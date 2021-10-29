@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  staffshift-client-management:
+    image: staffshift-client-management
+    container_name: staffshift-client-management
+    ports:
+    - "3380:3380"
+    command: 'sh -c "npm run test && npm run lint"'
+    environment:
+    - NODE_ENV=ci
+    depends_on:
+    - mountebank
+    - database
+  mountebank:
+    container_name: mountebank
+    hostname: mountebank
+    image: mountebank
+    ports:
+    - "2525:2525"
+  database:
+    container_name: database
+    hostname: database
+    image: database
+    ports:
+    - "27017:27017"
