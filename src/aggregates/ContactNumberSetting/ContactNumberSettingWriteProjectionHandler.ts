@@ -23,9 +23,7 @@ implements WriteProjectionInterface<ContactNumberSettingAggregateRecordInterface
           order: eventData.order
         };
 
-        aggregate.contact_number_types
-          ? aggregate.contact_number_types.push(contactNumberType)
-          : (aggregate.contact_number_types = [contactNumberType]);
+        aggregate.types ? aggregate.types.push(contactNumberType) : (aggregate.types = [contactNumberType]);
 
         return {...aggregate, last_sequence_id: event.sequence_id};
       }

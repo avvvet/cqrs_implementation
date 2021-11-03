@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 
 export const mochaHooks = {
-  beforeAll: function beforeAll(done: () => void) {
+  beforeAll: function beforeAll(done: () => void): void {
     this.timeout(65000);
     // eslint-disable-next-line no-console
     console.log('Waiting for http server to run');

@@ -10,7 +10,7 @@ export class ContactNumberSettingCommandBus {
   /**
    * Add a command handler to the list of supported handlers
    */
-  addHandler(commandHandler: ContactNumberSettingCommandHandlerInterface) {
+  addHandler(commandHandler: ContactNumberSettingCommandHandlerInterface): ContactNumberSettingCommandBus {
     this.commandHandlers.push(commandHandler);
     return this;
   }

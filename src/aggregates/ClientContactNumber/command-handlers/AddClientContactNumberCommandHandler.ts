@@ -1,3 +1,4 @@
+import {ClientContactNumberAddedEventStoreDataInterface} from 'EventStoreDataTypes';
 import {ClientContactNumberRepository} from '../ClientContactNumberRepository';
 import {ClientContactNumberCommandHandlerInterface} from '../types/ClientContactNumberCommandHandlerInterface';
 import {AddClientContactNumberCommandDataInterface} from '../types/CommandDataTypes';
@@ -7,7 +8,7 @@ import {EventsEnum} from '../../../Events';
 /**
  * Class responsible for handling add client contact number command
  */
-export class AddClientContactNumberTypeCommandHandler implements ClientContactNumberCommandHandlerInterface {
+export class AddClientContactNumberCommandHandler implements ClientContactNumberCommandHandlerInterface {
   public commandType = ClientContactNumberCommandEnum.ADD_CLIENT_CONTACT_NUMBER;
 
   constructor(private clientContactNumberRepository: ClientContactNumberRepository) {}
@@ -22,9 +23,10 @@ export class AddClientContactNumberTypeCommandHandler implements ClientContactNu
         aggregate_id: aggregate.getId(),
         data: {
           _id: commandData._id,
+          client_id: clientId,
           type_id: commandData.type_id,
           number: commandData.number
-        } as AddClientContactNumberCommandDataInterface,
+        } as ClientContactNumberAddedEventStoreDataInterface,
         sequence_id: ++eventId
       }
     ]);

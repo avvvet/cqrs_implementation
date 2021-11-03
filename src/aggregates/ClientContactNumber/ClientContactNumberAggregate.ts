@@ -1,14 +1,11 @@
-import {
-  ClientContactNumberAggregateRecordInterface,
-  ClientContactNumberSettingAggregateIdInterface
-} from './types';
+import {ClientContactNumberAggregateRecordInterface, ClientContactNumberAggregateIdInterface} from './types';
 
 export class ClientContactNumberAggregate {
   constructor(
-    private id: ClientContactNumberSettingAggregateIdInterface,
+    private id: ClientContactNumberAggregateIdInterface,
     private aggregate: ClientContactNumberAggregateRecordInterface
   ) {}
-  getId(): ClientContactNumberSettingAggregateIdInterface {
+  getId(): ClientContactNumberAggregateIdInterface {
     return this.id;
   }
 

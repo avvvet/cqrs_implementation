@@ -1,7 +1,4 @@
-import {
-  ContactNumberSettingAggregateRecordInterface,
-  ContactNumberSettingAggregateId
-} from './types';
+import {ContactNumberSettingAggregateRecordInterface, ContactNumberSettingAggregateId} from './types';
 
 export class ContactNumberSettingAggregate {
   constructor(
