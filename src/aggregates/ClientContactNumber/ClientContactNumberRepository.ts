@@ -5,27 +5,27 @@ import {EventStoreModelInterface} from '../../models/EventStore';
 import {ClientContactNumberWriteProjectionHandler} from './ClientContactNumberWriteProjectionHandler';
 
 /**
- * Class responsible for interacting with client contact number aggregate data source
+ * Class responsible for aggregate retrieval and saving events to event store
  */
 export class ClientContactNumberRepository {
-  private static readonly AGGREGATE_ID_TYPE = 'client_contact_number';
+  private static readonly AGGREGATE_ID_NAME = 'client_contact_number';
 
   constructor(
     private eventRepository: EventRepository,
     private writeProjectionHandler: ClientContactNumberWriteProjectionHandler
   ) {}
   /**
-   * Build and returns ClientContactNumberCommandBus
+   * Build and returns an aggregate
    */
   async getAggregate(clientId: string, sequenceId: number = undefined): Promise<ClientContactNumberAggregate> {
     const projection: ClientContactNumberAggregateRecordInterface = await this.eventRepository.leftFoldEvents(
       this.writeProjectionHandler,
-      {client_id: clientId, type: ClientContactNumberRepository.AGGREGATE_ID_TYPE},
+      {client_id: clientId, name: ClientContactNumberRepository.AGGREGATE_ID_NAME},
       sequenceId
     );
 
     return new ClientContactNumberAggregate(
-      {client_id: clientId, type: ClientContactNumberRepository.AGGREGATE_ID_TYPE},
+      {client_id: clientId, name: ClientContactNumberRepository.AGGREGATE_ID_NAME},
       projection
     );
   }

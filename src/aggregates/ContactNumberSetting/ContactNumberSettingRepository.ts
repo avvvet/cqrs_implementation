@@ -5,7 +5,7 @@ import {EventStoreModelInterface} from '../../models/EventStore';
 import {ContactNumberSettingWriteProjectionHandler} from './ContactNumberSettingWriteProjectionHandler';
 
 /**
- * Class responsible for interacting with contact number setting aggregate data source
+ * Class responsible for aggregate retrieval and saving events to event store
  */
 export class ContactNumberSettingRepository {
   constructor(
@@ -14,7 +14,7 @@ export class ContactNumberSettingRepository {
   ) {}
 
   /**
-   * Build and returns ContactNumberSettingCommandBus
+   * Build and returns an aggregate
    */
   async getAggregate(sequenceId: number = undefined): Promise<ContactNumberSettingAggregate> {
     const projection: ContactNumberSettingAggregateRecordInterface = await this.eventRepository.leftFoldEvents(
