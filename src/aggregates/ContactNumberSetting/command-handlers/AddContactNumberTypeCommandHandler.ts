@@ -1,0 +1,33 @@
+import {ContactNumberTypeAddedEventStoreDataInterface} from 'EventStoreDataTypes';
+import {ContactNumberSettingRepository} from '../ContactNumberSettingRepository';
+import {ContactNumberSettingCommandHandlerInterface} from '../types/ContactNumberSettingCommandHandlerInterface';
+import {AddContactNumberTypeCommandDataInterface} from '../types/CommandDataTypes';
+import {ContactNumberSettingCommandEnum} from '../types';
+import {EventsEnum} from '../../../Events';
+
+/**
+ * Class responsible for handling add contact number type command
+ */
+export class AddContactNumberTypeCommandHandler implements ContactNumberSettingCommandHandlerInterface {
+  public commandType = ContactNumberSettingCommandEnum.ADD_CONTACT_NUMBER_TYPE;
+
+  constructor(private contactNumberSettingRepository: ContactNumberSettingRepository) {}
+
+  async execute(commandData: AddContactNumberTypeCommandDataInterface): Promise<void> {
+    const aggregate = await this.contactNumberSettingRepository.getAggregate();
+    let eventId = aggregate.getLastEventId();
+
+    await this.contactNumberSettingRepository.save([
+      {
+        type: EventsEnum.CONTACT_NUMBER_TYPE_ADDED,
+        aggregate_id: aggregate.getId(),
+        data: {
+          _id: commandData._id,
+          name: commandData.name,
+          order: commandData.order
+        } as ContactNumberTypeAddedEventStoreDataInterface,
+        sequence_id: ++eventId
+      }
+    ]);
+  }
+}

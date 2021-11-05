@@ -1,0 +1,1 @@
+export {AddClientContactNumberCommandDataInterface} from './AddClientContactNumberCommandDataInterface';

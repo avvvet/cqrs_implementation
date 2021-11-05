@@ -1,3 +1,3 @@
-import {BaseEventStoreDataInterface} from './BaseEventStoreDataInterface';
-
-export {BaseEventStoreDataInterface};
+export {BaseEventStoreDataInterface} from './BaseEventStoreDataInterface';
+export {ContactNumberTypeAddedEventStoreDataInterface} from './ContactNumberTypeAddedEventStoreDataInterface';
+export {ClientContactNumberAddedEventStoreDataInterface} from './ClientContactNumberAddedEventStoreDataInterface';

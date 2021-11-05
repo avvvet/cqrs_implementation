@@ -1,0 +1,1 @@
+export {AddContactNumberTypeCommandInterface} from './AddContactNumberTypeCommandInterface';
