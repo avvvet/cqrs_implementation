@@ -39,7 +39,77 @@ paths:
       tags:
         - "Status"
       summary: "Gets the status of the service"
+  /contact-number-type:
+    parameters:
+      - $ref: "#/parameters/x_request_id"
+      - $ref: "#/parameters/x_request_jwt"
+    post:
+      x-swagger-router-controller: "ContactNumberType"
+      operationId: "addContactNumberType"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/add_contact_number_type_payload"
+      responses:
+        202:
+          description: "Add contact number type"
+          headers:
+            Location:
+              description: "URL to retrieve the contact number type created"
+              type: string
+        400:
+          description: "Validation error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/add_contact_number_type_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Add contact number type"
+      tags:
+        - "Contact Number Type"
+parameters:
+  x_request_id:
+    name: X-Request-Id
+    in: header
+    description: "The request Id for the incoming request"
+    type: string
+  x_request_jwt:
+    name: x-request-jwt
+    in: header
+    required: true
+    type: string
+    description: "The JWT Token"
+  add_contact_number_type_payload:
+    name: add_contact_number_type_payload
+    in: body
+    required: true
+    description: "The payload used to create contact number type"
+    schema:
+      type: object
+      properties:
+        name:
+          type: string
+        order:
+          type: number
+          default: 1
+      required:
+        - name
+      additionalProperties: false
 definitions:
+  unauthorize_error_model:
+    type: "object"
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: "string"
+        enum:
+          - UNAUTHORIZED
+      message:
+        type: "string"
+    additionalProperties: false
   server_status_response:
     type: "object"
     required:
@@ -48,7 +118,7 @@ definitions:
       up_time:
         type: integer
     additionalProperties: false
-  server_error_model:
+  server_error_def:
     type: object
     required:
     - code
@@ -61,11 +131,55 @@ definitions:
       stack:
         type: string
     additionalProperties: false
+  add_contact_number_type_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - REQUIRED
+          - MODEL_VALIDATION_FAILED
+          - SCHEMA_VALIDATION_FAILED
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+          required:
+            - code
+            - message
+            - path
+          properties:
+            code:
+              type: string
+              enum:
+                - INVALID_TYPE
+                - OBJECT_ADDITIONAL_PROPERTIES
+                - OBJECT_MISSING_REQUIRED_PROPERTY
+                - DUPLICATE_NAME
+            message:
+              type: string
+            path:
+              type: array
+              items:
+                type: string
+            description:
+              type: string
+          additionalProperties: false
+    additionalProperties: false
 responses:
+  unauthorize_error_model:
+    description: "Failed to authenticate the incoming request"
+    schema:
+      $ref: "#/definitions/unauthorize_error_model"
   server_error_model:
     description: "Server error occurred"
     schema:
-      $ref: "#/definitions/server_error_model"
+      $ref: "#/definitions/server_error_def"
 securityDefinitions:
   jwt:
     type: apiKey

@@ -1,8 +1,14 @@
-import {WriteProjectionInterface} from '../../WriteProjectionInterface';
-import {ContactNumberSettingAggregateRecordInterface, ContactNumberTypeInterface} from './types';
-import {AddContactNumberTypeCommandDataInterface} from './types/CommandDataTypes';
-import {EventStoreModelInterface} from '../../models/EventStore';
+import {ContactNumberTypeAddedEventStoreDataInterface} from 'EventStoreDataTypes';
+import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {map} from 'lodash';
 import {EventsEnum} from '../../Events';
+import {EventStoreModelInterface} from '../../models/EventStore';
+import {WriteProjectionInterface} from '../../WriteProjectionInterface';
+import {
+  ContactNumberSettingAggregateRecordInterface,
+  ContactNumberTypeInterface,
+  ContactNumberTypeStatusEnum
+} from './types';
 
 /**
  * Responsible for handling all contact number setting events to build the current state of the aggregate
@@ -16,7 +22,7 @@ implements WriteProjectionInterface<ContactNumberSettingAggregateRecordInterface
   ): ContactNumberSettingAggregateRecordInterface {
     switch (type) {
       case EventsEnum.CONTACT_NUMBER_TYPE_ADDED: {
-        const eventData = event.data as AddContactNumberTypeCommandDataInterface;
+        const eventData = event.data as ContactNumberTypeAddedEventStoreDataInterface;
         const contactNumberType: ContactNumberTypeInterface = {
           _id: eventData._id,
           name: eventData.name,
@@ -25,6 +31,17 @@ implements WriteProjectionInterface<ContactNumberSettingAggregateRecordInterface
 
         aggregate.types ? aggregate.types.push(contactNumberType) : (aggregate.types = [contactNumberType]);
 
+        return {...aggregate, last_sequence_id: event.sequence_id};
+      }
+      case EventsEnum.CONTACT_NUMBER_TYPE_ENABLED: {
+        const eventData = event.data as ContactNumberTypeEnabledEventStoreDataInterface;
+
+        aggregate.types = map(aggregate.types, (contactNumberType) => {
+          if (contactNumberType._id === eventData._id) {
+            contactNumberType.status = ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED;
+          }
+          return contactNumberType;
+        });
         return {...aggregate, last_sequence_id: event.sequence_id};
       }
       default:
