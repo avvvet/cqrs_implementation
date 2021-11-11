@@ -1,5 +1,5 @@
-import * as config from 'config';
-import * as supertest from 'supertest';
+import config from 'config';
+import supertest from 'supertest';
 
 const {host, port, protocol, version} = config.get('exposed_server');
 
