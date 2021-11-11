@@ -4,11 +4,12 @@ import {SwaggerRequestInterface} from 'SwaggerRequestInterface';
 import {ContactNumberSettingCommandEnum} from '../aggregates/ContactNumberSetting/types';
 import {AddContactNumberTypeCommandInterface} from '../aggregates/ContactNumberSetting/types/CommandTypes';
 import {ContactNumberSettingCommandBusFactory} from '../factories/ContactNumberSettingCommandBusFactory';
-import {ObjectID} from 'mongodb';
+import {Types} from 'mongoose';
+import {ValidationError} from 'a24-node-error-utils';
 
 interface AddContactNumberTypePayloadInterface {
   name: string;
-  order: number;
+  order?: number;
 }
 
 /**
@@ -27,7 +28,7 @@ export const addContactNumberType = async (
     const swaggerParams = req.swagger.params || {};
     const eventRepository = req.eventRepository;
     const commandBus = ContactNumberSettingCommandBusFactory.getCommandBus(eventRepository);
-    const contactNumberTypeId = new ObjectID().toString();
+    const contactNumberTypeId = new Types.ObjectId().toString();
     const payload = get(
       swaggerParams,
       'add_contact_number_type_payload.value',
@@ -48,7 +49,9 @@ export const addContactNumberType = async (
     res.setHeader('Location', `${req.basePathName}/${contactNumberTypeId}`);
     res.end();
   } catch (error) {
-    req.Logger.error('Unknown error in add contact number type', error);
+    if (!(error instanceof ValidationError)) {
+      req.Logger.error('Unknown error in add contact number type', error);
+    }
     return next(error);
   }
 };

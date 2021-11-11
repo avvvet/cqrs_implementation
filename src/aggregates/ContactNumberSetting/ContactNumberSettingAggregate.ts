@@ -14,7 +14,7 @@ export class ContactNumberSettingAggregate {
    * make sure we don't have any duplicate name
    * we trim and lowercase the `name` to make sure it's not duplicated
    */
-  validateAddContactNumberType(commandData: AddContactNumberTypeCommandDataInterface) {
+  async validateAddContactNumberType(commandData: AddContactNumberTypeCommandDataInterface): Promise<void> {
     if (this.aggregate.types) {
       const name = trim(toLower(commandData.name));
 

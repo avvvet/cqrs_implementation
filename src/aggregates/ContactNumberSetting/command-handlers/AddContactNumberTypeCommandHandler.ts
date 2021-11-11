@@ -18,7 +18,7 @@ export class AddContactNumberTypeCommandHandler implements ContactNumberSettingC
   async execute(commandData: AddContactNumberTypeCommandDataInterface): Promise<void> {
     const aggregate = await this.contactNumberSettingRepository.getAggregate();
 
-    aggregate.validateAddContactNumberType(commandData);
+    await aggregate.validateAddContactNumberType(commandData);
     let eventId = aggregate.getLastEventId();
 
     await this.contactNumberSettingRepository.save([
