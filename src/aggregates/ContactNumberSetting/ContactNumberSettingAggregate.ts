@@ -1,4 +1,4 @@
-import {toLower, trim} from 'lodash';
+import {toLower, trim, isEmpty} from 'lodash';
 import {ContactNumberSettingAggregateRecordInterface, ContactNumberSettingAggregateId} from './types';
 import {AddContactNumberTypeCommandDataInterface} from './types/CommandDataTypes';
 import {ValidationError} from 'a24-node-error-utils';
@@ -15,7 +15,7 @@ export class ContactNumberSettingAggregate {
    * we trim and lowercase the `name` to make sure it's not duplicated
    */
   async validateAddContactNumberType(commandData: AddContactNumberTypeCommandDataInterface): Promise<void> {
-    if (this.aggregate.types) {
+    if (!isEmpty(this.aggregate.types)) {
       const name = trim(toLower(commandData.name));
 
       for (const type of this.aggregate.types) {
