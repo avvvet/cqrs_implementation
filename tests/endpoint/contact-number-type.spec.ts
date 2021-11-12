@@ -31,7 +31,7 @@ describe('/contact-number-type', () => {
   describe('post', () => {
     it('should respond with 202 Creates a contact number type', async () => {
       const res = await api.post('/contact-number-type').set(headers).send({
-        name: 'ok',
+        name: 'sample',
         order: 2
       });
 
@@ -90,7 +90,7 @@ describe('/contact-number-type', () => {
         additionalProperties: false
       };
       const res = await api.post('/contact-number-type').set(headers).send({
-        name: 'ok',
+        name: 'sample',
         order: 'oops'
       });
 
@@ -117,7 +117,7 @@ describe('/contact-number-type', () => {
 
       otherHeaders['x-request-jwt'] = 'invalid';
       const res = await api.post('/contact-number-type').set(otherHeaders).send({
-        name: 'ok'
+        name: 'sample'
       });
 
       assert.equal(res.statusCode, 401);
