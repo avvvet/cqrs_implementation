@@ -65,7 +65,9 @@ describe('/contact-number-type', () => {
                     'INVALID_TYPE',
                     'OBJECT_ADDITIONAL_PROPERTIES',
                     'OBJECT_MISSING_REQUIRED_PROPERTY',
-                    'DUPLICATE_NAME'
+                    'DUPLICATE_NAME',
+                    'MAX_LENGTH',
+                    'MIN_LENGTH'
                   ]
                 },
                 message: {

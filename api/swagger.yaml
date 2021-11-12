@@ -90,6 +90,8 @@ parameters:
       properties:
         name:
           type: string
+          minLength: 3
+          maxLength: 100
         order:
           type: number
           default: 1
@@ -161,6 +163,8 @@ definitions:
                 - OBJECT_ADDITIONAL_PROPERTIES
                 - OBJECT_MISSING_REQUIRED_PROPERTY
                 - DUPLICATE_NAME
+                - MIN_LENGTH
+                - MAX_LENGTH
             message:
               type: string
             path:
