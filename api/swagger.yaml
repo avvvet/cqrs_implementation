@@ -68,6 +68,34 @@ paths:
       summary: "Add contact number type"
       tags:
         - "Contact Number Type"
+  /contact-number-type/{contact_number_type_id}:
+    parameters:
+      - $ref: "#/parameters/x_request_id"
+      - $ref: "#/parameters/x_request_jwt"
+      - $ref: "#/parameters/contact_number_type_id"
+    patch:
+      x-swagger-router-controller: "ContactNumberType"
+      operationId: "updateContactNumberType"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/update_contact_number_type_payload"
+      responses:
+        202:
+          description: "Update contact number type"
+        400:
+          description: "Validation error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/update_contact_number_type_validation_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Update contact number type"
+      tags:
+        - "Contact Number Type"
 parameters:
   x_request_id:
     name: X-Request-Id
@@ -80,6 +108,27 @@ parameters:
     required: true
     type: string
     description: "The JWT Token"
+  contact_number_type_id:
+    name: contact_number_type_id
+    in: path
+    required: true
+    pattern: ^[0-9a-fA-F]{24}$
+    description: "Contact Number Type ID"
+    type: string
+  update_contact_number_type_payload:
+    name: update_contact_number_type_payload
+    in: body
+    required: true
+    description: "The payload used to update contact number type"
+    schema:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        order:
+          type: number
   add_contact_number_type_payload:
     name: add_contact_number_type_payload
     in: body
@@ -133,6 +182,20 @@ definitions:
       stack:
         type: string
     additionalProperties: false
+  resource_not_found:
+    description: "No resource found"
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - RESOURCE_NOT_FOUND
+      message:
+        type: string
+    additionalProperties: false
   add_contact_number_type_validation_error_model:
     type: object
     required:
@@ -175,6 +238,48 @@ definitions:
               type: string
           additionalProperties: false
     additionalProperties: false
+  update_contact_number_type_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - REQUIRED
+          - MODEL_VALIDATION_FAILED
+          - SCHEMA_VALIDATION_FAILED
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+          required:
+            - code
+            - message
+            - path
+          properties:
+            code:
+              type: string
+              enum:
+                - INVALID_TYPE
+                - OBJECT_ADDITIONAL_PROPERTIES
+                - DUPLICATE_NAME
+                - MIN_LENGTH
+                - MAX_LENGTH
+                - EMPTY_BODY
+            message:
+              type: string
+            path:
+              type: array
+              items:
+                type: string
+            description:
+              type: string
+          additionalProperties: false
+    additionalProperties: false
 responses:
   unauthorize_error_model:
     description: "Failed to authenticate the incoming request"
@@ -184,6 +289,10 @@ responses:
     description: "Server error occurred"
     schema:
       $ref: "#/definitions/server_error_def"
+  resource_not_found:
+    description: "Resource not found"
+    schema:
+      $ref: "#/definitions/resource_not_found"
 securityDefinitions:
   jwt:
     type: apiKey
