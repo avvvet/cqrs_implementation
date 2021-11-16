@@ -1,5 +1,6 @@
 import {LoggerContext} from 'a24-logzio-winston';
 import {IncomingMessage} from 'http';
+import {EventRepository} from '../EventRepository';
 
 export interface SwaggerRequestInterface extends IncomingMessage {
   Logger: LoggerContext;
@@ -10,4 +11,5 @@ export interface SwaggerRequestInterface extends IncomingMessage {
     };
   };
   basePathName: string;
+  eventRepository: EventRepository;
 }
