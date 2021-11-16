@@ -2,6 +2,6 @@ lines: 90
 statements: 90
 functions: 90
 branches: 90
-reporter: ["lcov","text-summary"]
+#reporter: ["lcov","text-summary"]
 include: ["src"]
 all: true

@@ -1,6 +1,6 @@
 import {ContactNumberTypeUpdatedEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
 import {ContactNumberSettingRepository} from '../ContactNumberSettingRepository';
-import {UpdateContactNumberTypeCommandDataInterface} from '../types/CommandDataTypes/UpdateContactNumberTypeCommandDataInterface';
+import {UpdateContactNumberTypeCommandDataInterface} from '../types/CommandDataTypes';
 import {ContactNumberSettingCommandHandlerInterface} from '../types/ContactNumberSettingCommandHandlerInterface';
 import {ContactNumberSettingCommandEnum} from '../types';
 import {EventsEnum} from '../../../Events';

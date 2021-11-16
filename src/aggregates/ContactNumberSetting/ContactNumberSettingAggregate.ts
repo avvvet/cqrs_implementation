@@ -1,14 +1,32 @@
 import {toLower, trim, isEmpty, find} from 'lodash';
 import {ContactNumberSettingAggregateRecordInterface, ContactNumberSettingAggregateId} from './types';
-import {AddContactNumberTypeCommandDataInterface} from './types/CommandDataTypes';
+import {
+  AddContactNumberTypeCommandDataInterface,
+  UpdateContactNumberTypeCommandDataInterface
+} from './types/CommandDataTypes';
 import {ValidationError, ResourceNotFoundError} from 'a24-node-error-utils';
-import {UpdateContactNumberTypeCommandDataInterface} from './types/CommandDataTypes/UpdateContactNumberTypeCommandDataInterface';
 
 export class ContactNumberSettingAggregate {
   constructor(
     private id: typeof ContactNumberSettingAggregateId,
     private aggregate: ContactNumberSettingAggregateRecordInterface
   ) {}
+
+  /**
+   * normalize contact number type name for checking duplicate
+   */
+  private static normalizeName(name: string): string {
+    return trim(toLower(name));
+  }
+
+  /**
+   * checks if contact number type exists
+   */
+  private validateTypeExistence(id: string): void {
+    if (!find(this.aggregate.types, {_id: id})) {
+      throw new ResourceNotFoundError(`Contact number type with id ${id} not found`);
+    }
+  }
 
   /**
    * Validate add contact number type
@@ -38,9 +56,7 @@ export class ContactNumberSettingAggregate {
    * make sure we don't have already the same contact number type name
    */
   async validateUpdateContactNumberType(commandData: UpdateContactNumberTypeCommandDataInterface): Promise<void> {
-    if (!find(this.aggregate.types, {_id: commandData._id})) {
-      throw new ResourceNotFoundError(`Contact number type with id ${commandData._id} not found`);
-    }
+    this.validateTypeExistence(commandData._id);
     if (commandData.name) {
       const name = ContactNumberSettingAggregate.normalizeName(commandData.name);
 
@@ -56,13 +72,6 @@ export class ContactNumberSettingAggregate {
         }
       }
     }
-  }
-
-  /**
-   * normalize contact number type name for checking duplicate
-   */
-  private static normalizeName(name: string): string {
-    return trim(toLower(name));
   }
 
   getId(): typeof ContactNumberSettingAggregateId {

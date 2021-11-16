@@ -1,3 +1,4 @@
+import {cloneDeep} from 'lodash';
 import {ContactNumberSettingWriteProjectionHandler} from '../../../src/aggregates/ContactNumberSetting/ContactNumberSettingWriteProjectionHandler';
 import {
   ContactNumberSettingAggregateRecordInterface,
@@ -7,6 +8,7 @@ import {EventsEnum} from '../../../src/Events';
 import {EventStore} from '../../../src/models/EventStore';
 import {ContactNumberTypeAddedEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes';
 import {ContactNumberTypeEnabledEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {ContactNumberTypeUpdatedEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
 
 describe('ContactNumberSettingWriteProjectionHandler', () => {
   describe('execute()', () => {
@@ -136,6 +138,156 @@ describe('ContactNumberSettingWriteProjectionHandler', () => {
         response.types.length.should.equal(2);
         (response.types[0].status === undefined).should.be.true;
         (response.types[1].status === undefined).should.be.true;
+      });
+    });
+    describe('CONTACT_NUMBER_TYPE_UPDATED', () => {
+      it('Test when record is found and both order and name set', () => {
+        const eventData: ContactNumberTypeUpdatedEventStoreDataInterface = {
+          _id: 'id',
+          order: 2,
+          name: 'new name'
+        };
+        const event = new EventStore({
+          type: 'sample',
+          aggregate_id: {},
+          data: eventData,
+          sequence_id: 1,
+          meta_data: {},
+          correlation_id: 1
+        });
+        const aggregate: ContactNumberSettingAggregateRecordInterface = {
+          last_sequence_id: 0,
+          types: [
+            {
+              _id: 'id2',
+              name: 'oops2',
+              order: 2
+            },
+            {
+              _id: 'id',
+              name: 'oops',
+              order: 10
+            }
+          ]
+        };
+        const handler = new ContactNumberSettingWriteProjectionHandler();
+
+        const response = handler.execute(EventsEnum.CONTACT_NUMBER_TYPE_UPDATED, aggregate, event);
+
+        response.types.length.should.equal(2);
+        response.types[1].name.should.equal('new name');
+        response.types[1].order.should.equal(2);
+      });
+
+      it('Test when record is found and only order is set', () => {
+        const eventData: ContactNumberTypeUpdatedEventStoreDataInterface = {
+          _id: 'id',
+          order: 2
+        };
+        const event = new EventStore({
+          type: 'sample',
+          aggregate_id: {},
+          data: eventData,
+          sequence_id: 1,
+          meta_data: {},
+          correlation_id: 1
+        });
+        const aggregate: ContactNumberSettingAggregateRecordInterface = {
+          last_sequence_id: 0,
+          types: [
+            {
+              _id: 'id2',
+              name: 'oops2',
+              order: 2
+            },
+            {
+              _id: 'id',
+              name: 'oops',
+              order: 10
+            }
+          ]
+        };
+        const handler = new ContactNumberSettingWriteProjectionHandler();
+
+        const response = handler.execute(EventsEnum.CONTACT_NUMBER_TYPE_UPDATED, aggregate, event);
+
+        response.types.length.should.equal(2);
+        response.types[1].name.should.equal('oops');
+        response.types[1].order.should.equal(2);
+      });
+
+      it('Test when record is found and only name is set', () => {
+        const eventData: ContactNumberTypeUpdatedEventStoreDataInterface = {
+          _id: 'id',
+          name: 'new'
+        };
+        const event = new EventStore({
+          type: 'sample',
+          aggregate_id: {},
+          data: eventData,
+          sequence_id: 1,
+          meta_data: {},
+          correlation_id: 1
+        });
+        const aggregate: ContactNumberSettingAggregateRecordInterface = {
+          last_sequence_id: 0,
+          types: [
+            {
+              _id: 'id2',
+              name: 'oops2',
+              order: 2
+            },
+            {
+              _id: 'id',
+              name: 'oops',
+              order: 10
+            }
+          ]
+        };
+        const handler = new ContactNumberSettingWriteProjectionHandler();
+
+        const response = handler.execute(EventsEnum.CONTACT_NUMBER_TYPE_UPDATED, aggregate, event);
+
+        response.types.length.should.equal(2);
+        response.types[1].name.should.equal('new');
+        response.types[1].order.should.equal(10);
+      });
+
+      it('Test when record not found', () => {
+        const eventData: ContactNumberTypeUpdatedEventStoreDataInterface = {
+          _id: 'id',
+          order: 2,
+          name: 'new name'
+        };
+        const event = new EventStore({
+          type: 'sample',
+          aggregate_id: {},
+          data: eventData,
+          sequence_id: 1,
+          meta_data: {},
+          correlation_id: 1
+        });
+        const aggregate: ContactNumberSettingAggregateRecordInterface = {
+          last_sequence_id: 0,
+          types: [
+            {
+              _id: 'id2',
+              name: 'oops2',
+              order: 2
+            },
+            {
+              _id: 'id33',
+              name: 'oops',
+              order: 10
+            }
+          ]
+        };
+        const original = cloneDeep(aggregate.types);
+        const handler = new ContactNumberSettingWriteProjectionHandler();
+
+        const response = handler.execute(EventsEnum.CONTACT_NUMBER_TYPE_UPDATED, aggregate, event);
+
+        response.types.should.deep.equal(original);
       });
     });
   });
