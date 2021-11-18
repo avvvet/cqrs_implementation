@@ -1,7 +1,7 @@
 import {ContactNumberTypeAddedEventStoreDataInterface} from 'EventStoreDataTypes';
 import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
 import {ContactNumberTypeUpdatedEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
-import {map} from 'lodash';
+import {map, merge} from 'lodash';
 import {EventsEnum} from '../../Events';
 import {EventStoreModelInterface} from '../../models/EventStore';
 import {WriteProjectionInterface} from '../../WriteProjectionInterface';
@@ -50,12 +50,7 @@ implements WriteProjectionInterface<ContactNumberSettingAggregateRecordInterface
 
         aggregate.types = map(aggregate.types, (contactNumberType) => {
           if (contactNumberType._id === eventData._id) {
-            if ('name' in eventData) {
-              contactNumberType.name = eventData.name;
-            }
-            if ('order' in eventData) {
-              contactNumberType.order = eventData.order;
-            }
+            merge(contactNumberType, eventData);
           }
           return contactNumberType;
         });
