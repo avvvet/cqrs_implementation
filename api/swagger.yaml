@@ -129,6 +129,7 @@ parameters:
           maxLength: 100
         order:
           type: number
+      additionalProperties: false
   add_contact_number_type_payload:
     name: add_contact_number_type_payload
     in: body
