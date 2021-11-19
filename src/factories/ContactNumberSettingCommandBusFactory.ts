@@ -1,4 +1,5 @@
 import {AddContactNumberTypeCommandHandler} from '../aggregates/ContactNumberSetting/command-handlers/AddContactNumberTypeCommandHandler';
+import {UpdateContactNumberTypeCommandHandler} from '../aggregates/ContactNumberSetting/command-handlers/UpdateContactNumberTypeCommandHandler';
 import {ContactNumberSettingCommandBus} from '../aggregates/ContactNumberSetting/ContactNumberSettingCommandBus';
 import {ContactNumberSettingRepository} from '../aggregates/ContactNumberSetting/ContactNumberSettingRepository';
 import {ContactNumberSettingWriteProjectionHandler} from '../aggregates/ContactNumberSetting/ContactNumberSettingWriteProjectionHandler';
@@ -18,7 +19,9 @@ export class ContactNumberSettingCommandBusFactory {
     );
     const commandBus = new ContactNumberSettingCommandBus();
 
-    commandBus.addHandler(new AddContactNumberTypeCommandHandler(contactNumberSettingRepository));
+    commandBus
+      .addHandler(new AddContactNumberTypeCommandHandler(contactNumberSettingRepository))
+      .addHandler(new UpdateContactNumberTypeCommandHandler(contactNumberSettingRepository));
     return commandBus;
   }
 }
