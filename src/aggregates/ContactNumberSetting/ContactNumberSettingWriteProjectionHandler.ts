@@ -1,5 +1,5 @@
 import {ContactNumberTypeAddedEventStoreDataInterface} from 'EventStoreDataTypes';
-import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabledEventStoreDataInterface';
 import {ContactNumberTypeUpdatedEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
 import {map, merge} from 'lodash';
 import {EventsEnum} from '../../Events';
@@ -40,6 +40,17 @@ implements WriteProjectionInterface<ContactNumberSettingAggregateRecordInterface
         aggregate.types = map(aggregate.types, (contactNumberType) => {
           if (contactNumberType._id === eventData._id) {
             contactNumberType.status = ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED;
+          }
+          return contactNumberType;
+        });
+        return {...aggregate, last_sequence_id: event.sequence_id};
+      }
+      case EventsEnum.CONTACT_NUMBER_TYPE_DISABLED: {
+        const eventData = event.data as ContactNumberTypeEnabledEventStoreDataInterface;
+
+        aggregate.types = map(aggregate.types, (contactNumberType) => {
+          if (contactNumberType._id === eventData._id) {
+            contactNumberType.status = ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED;
           }
           return contactNumberType;
         });

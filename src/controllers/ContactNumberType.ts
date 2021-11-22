@@ -4,6 +4,7 @@ import {SwaggerRequestInterface} from 'SwaggerRequestInterface';
 import {ContactNumberSettingCommandEnum} from '../aggregates/ContactNumberSetting/types';
 import {AddContactNumberTypeCommandInterface} from '../aggregates/ContactNumberSetting/types/CommandTypes';
 import {UpdateContactNumberTypeCommandInterface} from '../aggregates/ContactNumberSetting/types/CommandTypes/UpdateContactNumberTypeCommandInterface';
+import {EnableContactNumberTypeCommandInterface} from '../aggregates/ContactNumberSetting/types/CommandTypes/EnableContactNumberTypeCommandInterface';
 import {ContactNumberSettingCommandBusFactory} from '../factories/ContactNumberSettingCommandBusFactory';
 import {Types} from 'mongoose';
 import {ValidationError} from 'a24-node-error-utils';
@@ -101,6 +102,42 @@ export const updateContactNumberType = async (
         ...payload
       }
     } as UpdateContactNumberTypeCommandInterface;
+
+    await commandBus.execute(command);
+    res.statusCode = 202;
+    res.end();
+  } catch (error) {
+    if (!(error instanceof ValidationError)) {
+      req.Logger.error('Unknown error in update contact number type', error);
+    }
+    return next(error);
+  }
+};
+
+/**
+ * Enable Contact Number Type
+ *
+ * @param req - The http request object
+ * @param res - The http response object
+ * @param next - Function used to pass control to the next middleware
+ */
+ export const enableContactNumberType = async (
+  req: SwaggerRequestInterface,
+  res: ServerResponse,
+  next: (error?: Error) => void
+): Promise<void> => {
+  try {
+    const swaggerParams = req.swagger.params || {};
+    const contactNumberTypeId = get(swaggerParams, 'contact_number_type_id.value');
+    const eventRepository = req.eventRepository;
+    const commandBus = ContactNumberSettingCommandBusFactory.getCommandBus(eventRepository);
+
+    const command = {
+      type: ContactNumberSettingCommandEnum.ENABLE_CONTACT_NUMBER_TYPE,
+      data: {
+        _id: contactNumberTypeId
+      }
+    } as EnableContactNumberTypeCommandInterface;
 
     await commandBus.execute(command);
     res.statusCode = 202;
