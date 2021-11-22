@@ -178,7 +178,7 @@ describe('ContactNumberSettingAggregate', function () {
 
     });
 
-    it('Test consultant role not to be enabled', () => {
+    it('Test contact number type not to be enabled', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {
