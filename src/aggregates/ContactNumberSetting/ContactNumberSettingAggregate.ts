@@ -1,6 +1,6 @@
 import {toLower, trim, isEmpty, find} from 'lodash';
 import {
-  ContactNumberSettingAggregateRecordInterface, 
+  ContactNumberSettingAggregateRecordInterface,
   ContactNumberSettingAggregateId,
   ContactNumberTypeStatusEnum
 } from './types';
@@ -80,8 +80,7 @@ export class ContactNumberSettingAggregate {
 
   canEnableContactNumberType(contactNumberTypeId: string): boolean {
     const contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
-    console.log('>>>> role id ', contactNumberTypeId)
-    console.log('>>>>> aggreatetes', this.aggregate.types)
+
     if (!contactNumberType) {
       throw new ResourceNotFoundError('Contact Number type not found');
     }

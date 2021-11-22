@@ -121,7 +121,7 @@ export const updateContactNumberType = async (
  * @param res - The http response object
  * @param next - Function used to pass control to the next middleware
  */
- export const enableContactNumberType = async (
+export const enableContactNumberType = async (
   req: SwaggerRequestInterface,
   res: ServerResponse,
   next: (error?: Error) => void

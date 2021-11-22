@@ -16,12 +16,11 @@ export class EnableContactNumberTypeCommandHandler implements ContactNumberSetti
   async execute(commandData: EnableContactNumberTypeCommandDataInterface): Promise<void> {
     const aggregate = await this.contactNumberSettingRepository.getAggregate();
     const eventId = aggregate.getLastEventId();
-    
+
     if (!aggregate.canEnableContactNumberType(commandData._id)) {
       return;
     }
-    
-  
+
     await this.contactNumberSettingRepository.save([
       {
         type: EventsEnum.CONTACT_NUMBER_TYPE_ENABLED,
