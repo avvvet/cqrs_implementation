@@ -7,7 +7,7 @@ import {UpdateContactNumberTypeCommandInterface} from '../aggregates/ContactNumb
 import {EnableContactNumberTypeCommandInterface} from '../aggregates/ContactNumberSetting/types/CommandTypes/EnableContactNumberTypeCommandInterface';
 import {ContactNumberSettingCommandBusFactory} from '../factories/ContactNumberSettingCommandBusFactory';
 import {Types} from 'mongoose';
-import {ValidationError} from 'a24-node-error-utils';
+import {ValidationError, ResourceNotFoundError} from 'a24-node-error-utils';
 
 interface AddContactNumberTypePayloadInterface {
   name: string;
@@ -143,8 +143,8 @@ export const enableContactNumberType = async (
     res.statusCode = 202;
     res.end();
   } catch (error) {
-    if (!(error instanceof ValidationError)) {
-      req.Logger.error('Unknown error in update contact number type', error);
+    if (!(error instanceof ResourceNotFoundError)) {
+      req.Logger.error('Unknown error in enable contact number type', error);
     }
     return next(error);
   }

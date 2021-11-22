@@ -6,7 +6,7 @@ import {ContactNumberSettingAggregateId} from '../../../../src/aggregates/Contac
 import {AddContactNumberTypeCommandDataInterface} from '../../../../src/aggregates/ContactNumberSetting/types/CommandDataTypes';
 import {EventsEnum} from '../../../../src/Events';
 import {ContactNumberTypeAddedEventStoreDataInterface} from '../../../../src/types/EventStoreDataTypes';
-import {ContactNumberTypeEnabledEventStoreDataInterface} from '../../../../src/types/EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {ContactNumberTypeEnabledEventStoreDataInterface} from '../../../../src/types/EventStoreDataTypes/ContactNumberTypeEnabledEventStoreDataInterface';
 
 describe('AddContactNumberTypeCommandHandler', () => {
   afterEach(() => {

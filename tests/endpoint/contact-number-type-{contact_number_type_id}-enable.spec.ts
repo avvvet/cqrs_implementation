@@ -5,7 +5,6 @@ import {api} from '../tools/TestUtilsApi';
 import {getJWT} from '../tools/TestUtilsJwt';
 import _ from 'lodash';
 import {ContactNumberTypeScenario} from './scenarios/ContactNumberTypeScenario';
-import {AgencyConsultantRolesProjectionScenarios} from './scenarios/AgencyConsultantRolesProjectionScenarios';
 
 TestUtilsZSchemaFormatter.format();
 const validator = new ZSchema({});
@@ -26,19 +25,13 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
   const contactNumberTypeScenario = new ContactNumberTypeScenario();
 
   afterEach(async () => {
-    await agencyConsultantRoleScenario.deleteAllEvents();
-    await AgencyConsultantRolesProjectionScenarios.removeAll();
-  });
-
-  beforeEach(async () => {
     await contactNumberTypeScenario.deleteAllEvents();
-    await contactNumberTypeScenario.createContactNumberType(contactNumberTypeId);
   });
 
   describe('post', () => {
-    it('should respond with 202 Enable an agency client consultant', async () => {
-      await agencyConsultantRoleScenario.addAgencyConsultantRole(agencyId, roleId);
-      const res = await api.post(`/agency/${agencyId}/consultant-roles/${roleId}/enable`).set(headers).send({});
+    it('should respond with 202 Enable Contact Number Type', async () => {
+      await contactNumberTypeScenario.createContactNumberType(contactNumberTypeId);
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
 
       res.statusCode.should.be.equal(202);
     });
@@ -46,9 +39,9 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
     it('should respond with 404 resource not found', async () => {
       const errorMessage =
       {
-        message: 'Consultant role not found'
+        message: 'Contact Number Type not found'
       };
-      const res = await api.post(`/agency/${agencyId}/consultant-roles/${roleId}/enable`).set(headers).send({});
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
 
       assert.equal(res.statusCode, 404);
       assert.isTrue(validator.validate(res.body, errorMessage), 'response error message expected to be valid');
@@ -97,7 +90,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
         },
         additionalProperties: false
       };
-      const res = await api.post(`/agency/${agencyId}/consultant-roles/${roleId}/enable`).set(headers).send({
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({
         description: 'description'
       });
 
@@ -124,7 +117,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
 
       otherHeaders['x-request-jwt'] = 'invalid';
       const res = await api
-        .post(`/agency/${agencyId}/consultant-roles/${roleId}/enable`)
+        .post(`/contact-number-type/${contactNumberTypeId}/enable`)
         .set(otherHeaders)
         .send({});
 

@@ -1,8 +1,10 @@
+import {assert} from 'chai';
 import {ContactNumberSettingAggregate} from '../../../src/aggregates/ContactNumberSetting/ContactNumberSettingAggregate';
-import {ContactNumberSettingAggregateId} from '../../../src/aggregates/ContactNumberSetting/types';
+import {ContactNumberSettingAggregateId, ContactNumberTypeStatusEnum} from '../../../src/aggregates/ContactNumberSetting/types';
 import {
   AddContactNumberTypeCommandDataInterface,
-  UpdateContactNumberTypeCommandDataInterface
+  UpdateContactNumberTypeCommandDataInterface,
+  EnableContactNumberTypeCommandDataInterface
 } from '../../../src/aggregates/ContactNumberSetting/types/CommandDataTypes';
 import {ValidationError, ResourceNotFoundError} from 'a24-node-error-utils';
 
@@ -155,6 +157,58 @@ describe('ContactNumberSettingAggregate', function () {
       };
 
       await aggregate.validateUpdateContactNumberType(command).should.be.rejectedWith(ResourceNotFoundError);
+    });
+  });
+
+  describe('canEnableContactNumberType()', () => {
+    it('Test contact number type enabled', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: '61948046abd55b1a8ec55671',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isTrue(aggregate.canEnableContactNumberType('61948046abd55b1a8ec55671'), 'Expected to enable');
+
+    });
+
+    it('Test consultant role not to be enabled', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: '61948046abd55b1a8ec55671',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isFalse(aggregate.canEnableContactNumberType('61948046abd55b1a8ec55671'), 'Expected not to enable');
+
+    });
+
+    it('Test failure scenario', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: 'id',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.throws(() => aggregate.canEnableContactNumberType('some-id'), ResourceNotFoundError);
     });
   });
 });

@@ -7,7 +7,7 @@ import {
 import {EventsEnum} from '../../../src/Events';
 import {EventStore} from '../../../src/models/EventStore';
 import {ContactNumberTypeAddedEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes';
-import {ContactNumberTypeEnabledEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {ContactNumberTypeEnabledEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeEnabledEventStoreDataInterface';
 import {ContactNumberTypeUpdatedEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
 
 describe('ContactNumberSettingWriteProjectionHandler', () => {
