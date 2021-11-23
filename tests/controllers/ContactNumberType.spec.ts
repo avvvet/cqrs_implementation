@@ -201,7 +201,7 @@ describe('ContactNumberType', () => {
       const contactNumberTypeId = '619b78e7ff235c9e0cf0b6e1';
       const params = {
         contact_number_type_id: {value: contactNumberTypeId},
-        add_contact_number_type_payload: {
+        payload: {
           value: {}
         }
       };

@@ -98,6 +98,56 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
     });
 
+    it('should response with 400 bad request', async () => {
+      const schema = {
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['PATTERN']
+          },
+          message: {
+            type: 'string'
+          },
+          errors: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['code', 'message', 'path'],
+              properties: {
+                code: {
+                  type: 'string',
+                  enum: [
+                    'OBJECT_ADDITIONAL_PROPERTIES'
+                  ]
+                },
+                message: {
+                  type: 'string'
+                },
+                path: {
+                  type: 'array',
+                  items: {
+                    type: 'string'
+                  }
+                },
+                description: {
+                  type: 'string'
+                }
+              },
+              additionalProperties: false
+            }
+          }
+        },
+        additionalProperties: false
+      };
+      const contactNumberTypeId = '619b78e7ff235c9eww0cf0b6e1';
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
+
+      assert.equal(res.statusCode, 400);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+
     it('should respond with 401 Failed to authenticate', async () => {
       const schema = {
         type: 'object',
