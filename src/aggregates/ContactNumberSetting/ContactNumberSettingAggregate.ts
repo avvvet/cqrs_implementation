@@ -31,7 +31,7 @@ export class ContactNumberSettingAggregate {
     const contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
 
     if (!contactNumberType) {
-      throw new ResourceNotFoundError('Contact Number type not found');
+      throw new ResourceNotFoundError(`Contact number type with id ${contactNumberTypeId} not found`);
     }
 
     return contactNumberType;
