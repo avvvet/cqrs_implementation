@@ -37,14 +37,25 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
     });
 
     it('should respond with 404 resource not found', async () => {
-      const errorMessage =
-      {
-        message: 'Contact Number Type not found'
+      const schema = {
+        description: 'No resource found',
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['RESOURCE_NOT_FOUND']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
       };
       const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
 
       assert.equal(res.statusCode, 404);
-      assert.isTrue(validator.validate(res.body, errorMessage), 'response error message expected to be valid');
+      assert.isTrue(validator.validate(res.body, schema), 'response error message expected to be valid');
     });
 
     it('should response with 400 validation error', async () => {

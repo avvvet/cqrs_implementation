@@ -161,7 +161,7 @@ describe('ContactNumberSettingAggregate', function () {
   });
 
   describe('canEnableContactNumberType()', () => {
-    it('Test contact number type enabled', () => {
+    it('Test contact number type is disabled', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {
@@ -178,7 +178,7 @@ describe('ContactNumberSettingAggregate', function () {
 
     });
 
-    it('Test contact number type not to be enabled', () => {
+    it('Test contact number type is already enabled', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {
@@ -195,7 +195,7 @@ describe('ContactNumberSettingAggregate', function () {
 
     });
 
-    it('Test failure scenario', () => {
+    it('Test resource not found', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {

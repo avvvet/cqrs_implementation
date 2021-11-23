@@ -2,7 +2,8 @@ import {toLower, trim, isEmpty, find} from 'lodash';
 import {
   ContactNumberSettingAggregateRecordInterface,
   ContactNumberSettingAggregateId,
-  ContactNumberTypeStatusEnum
+  ContactNumberTypeStatusEnum,
+  ContactNumberTypeInterface
 } from './types';
 import {
   AddContactNumberTypeCommandDataInterface,
@@ -26,10 +27,14 @@ export class ContactNumberSettingAggregate {
   /**
    * checks if contact number type exists
    */
-  private validateTypeExistence(id: string): void {
-    if (!find(this.aggregate.types, {_id: id})) {
-      throw new ResourceNotFoundError(`Contact number type with id ${id} not found`);
+  private validateTypeExistence(contactNumberTypeId: string): ContactNumberTypeInterface {
+    const contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
+
+    if (!contactNumberType) {
+      throw new ResourceNotFoundError('Contact Number type not found');
     }
+
+    return contactNumberType;
   }
 
   /**
@@ -79,11 +84,7 @@ export class ContactNumberSettingAggregate {
   }
 
   canEnableContactNumberType(contactNumberTypeId: string): boolean {
-    const contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
-
-    if (!contactNumberType) {
-      throw new ResourceNotFoundError('Contact Number type not found');
-    }
+    const contactNumberType = this.validateTypeExistence(contactNumberTypeId);
 
     return contactNumberType.status !== ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED;
   }

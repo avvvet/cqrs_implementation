@@ -111,8 +111,6 @@ paths:
       responses:
         202:
           description: "Enables Contact Number Type"
-          schema:
-            $ref: "#/definitions/empty_payload_def"
         400:
           description: "Validation error."
           schema:
@@ -332,7 +330,6 @@ definitions:
         type: string
         enum:
           - "SCHEMA_VALIDATION_FAILED"
-          - "MODEL_VALIDATION_FAILED"
           - "PATTERN"
           - "REQUIRED"
       message:
