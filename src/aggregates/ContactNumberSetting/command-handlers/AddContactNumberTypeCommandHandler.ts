@@ -1,5 +1,5 @@
 import {ContactNumberTypeAddedEventStoreDataInterface} from 'EventStoreDataTypes';
-import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabledEventStoreDataInterface';
 import {has} from 'lodash';
 import {ContactNumberSettingRepository} from '../ContactNumberSettingRepository';
 import {ContactNumberSettingCommandHandlerInterface} from '../types/ContactNumberSettingCommandHandlerInterface';

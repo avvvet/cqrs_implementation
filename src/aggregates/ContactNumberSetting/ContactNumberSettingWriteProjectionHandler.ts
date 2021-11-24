@@ -1,5 +1,5 @@
 import {ContactNumberTypeAddedEventStoreDataInterface} from 'EventStoreDataTypes';
-import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabedEventStoreDataInterface';
+import {ContactNumberTypeEnabledEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeEnabledEventStoreDataInterface';
 import {ContactNumberTypeUpdatedEventStoreDataInterface} from 'EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
 import {map, merge} from 'lodash';
 import {EventsEnum} from '../../Events';

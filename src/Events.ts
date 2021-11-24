@@ -20,7 +20,7 @@ export const events: EventsType = {
   },
   [EventsEnum.CONTACT_NUMBER_TYPE_ENABLED]: {
     name: 'ContactNumberTypeEnabled',
-    description: 'The Contact Number Type has been enabled'
+    description: 'The Contact Number Type has been disabled'
   },
   [EventsEnum.CLIENT_CONTACT_NUMBER_ADDED]: {
     name: 'ClientContactNumberAdded',

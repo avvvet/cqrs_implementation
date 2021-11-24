@@ -96,7 +96,43 @@ paths:
       summary: "Update contact number type"
       tags:
         - "Contact Number Type"
+  /contact-number-type/{contact_number_type_id}/enable:
+    parameters:
+      - $ref: "#/parameters/x_request_id"
+      - $ref: "#/parameters/x_request_jwt"
+      - $ref: "#/parameters/contact_number_type_id"
+    post:
+      x-swagger-router-controller: "ContactNumberType"
+      operationId: "enableContactNumberType"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/empty_payload"
+      responses:
+        202:
+          description: "Enables Contact Number Type"
+        400:
+          description: "Validation error."
+          schema:
+            $ref: "#/definitions/empty_payload_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Enables Contact Number Type"
+      tags:
+        - "Contact Number Type"
 parameters:
+  # Route parameters
+  empty_payload:
+    name: empty_payload
+    in: body
+    required: true
+    description: "Used when the payload is expected to be empty"
+    schema:
+      $ref: "#/definitions/empty_payload_def"
   x_request_id:
     name: X-Request-Id
     in: header
@@ -169,6 +205,9 @@ definitions:
     properties:
       up_time:
         type: integer
+    additionalProperties: false
+  empty_payload_def:
+    type: object
     additionalProperties: false
   server_error_def:
     type: object
@@ -279,6 +318,43 @@ definitions:
                 type: string
             description:
               type: string
+          additionalProperties: false
+    additionalProperties: false
+  empty_payload_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - "SCHEMA_VALIDATION_FAILED"
+          - "PATTERN"
+          - "REQUIRED"
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+          required:
+            - code
+            - message
+            - path
+          properties:
+            code:
+              type: "string"
+              enum:
+                - "OBJECT_ADDITIONAL_PROPERTIES"
+            message:
+              type: "string"
+            path:
+              type: "array"
+              items:
+                type: "string"
+            description:
+              type: "string"
           additionalProperties: false
     additionalProperties: false
 responses:
