@@ -1,7 +1,12 @@
 import {assert} from 'chai';
 import {ContactNumberSettingCommandBus} from '../../src/aggregates/ContactNumberSetting/ContactNumberSettingCommandBus';
 import {ContactNumberSettingCommandEnum} from '../../src/aggregates/ContactNumberSetting/types';
-import {addContactNumberType, updateContactNumberType, enableContactNumberType} from '../../src/controllers/ContactNumberType';
+import {
+  addContactNumberType,
+  updateContactNumberType,
+  enableContactNumberType,
+  disableContactNumberType
+} from '../../src/controllers/ContactNumberType';
 import {fakeRequest, fakeResponse} from '../tools/TestUtilsHttp';
 import sinon from 'sinon';
 import {Types, Error} from 'mongoose';
@@ -238,6 +243,53 @@ describe('ContactNumberType', () => {
       sinon.stub(ContactNumberSettingCommandBus.prototype, 'execute').rejects(error);
 
       await enableContactNumberType(req, res, next);
+      assert.equal(next.callCount, 1, 'Expected next to be called');
+    });
+
+  });
+
+  describe('disableContactNumberType()', () => {
+    it('success scenario', async () => {
+      const contactNumberTypeId = '619b78e7ff235c9e0cf0b6e1';
+      const params = {
+        contact_number_type_id: {value: contactNumberTypeId},
+        payload: {
+          value: {}
+        }
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+      const end = sinon.stub(res, 'end');
+
+      sinon.stub(ContactNumberSettingCommandBus.prototype, 'execute').resolves();
+      await disableContactNumberType(req, res, next);
+      assert.equal(res.statusCode, 202, 'status code expected to be 202');
+      assert.equal(end.callCount, 1, 'Expected end to be called');
+      assert.equal(next.callCount, 0, 'Expected next to not be called');
+    });
+
+    it('failure scenario, ResourceNotFoundError', async () => {
+      const contactNumberTypeId = '619b78e7ff235c9e0cf0b6e1';
+      const params = {
+        contact_number_type_id: {value: contactNumberTypeId},
+        payload: {
+          value: {}
+        }
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+
+      const error = new ResourceNotFoundError('sample');
+
+      sinon.stub(ContactNumberSettingCommandBus.prototype, 'execute').rejects(error);
+
+      await disableContactNumberType(req, res, next);
       assert.equal(next.callCount, 1, 'Expected next to be called');
     });
 

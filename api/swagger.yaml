@@ -124,6 +124,34 @@ paths:
       summary: "Enables Contact Number Type"
       tags:
         - "Contact Number Type"
+  /contact-number-type/{contact_number_type_id}/disable:
+    parameters:
+      - $ref: "#/parameters/x_request_id"
+      - $ref: "#/parameters/x_request_jwt"
+      - $ref: "#/parameters/contact_number_type_id"
+    post:
+      x-swagger-router-controller: "ContactNumberType"
+      operationId: "disableContactNumberType"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/empty_payload"
+      responses:
+        202:
+          description: "Disable Contact Number Type"
+        400:
+          description: "Validation error."
+          schema:
+            $ref: "#/definitions/empty_payload_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Disable Contact Number Type"
+      tags:
+        - "Contact Number Type"
 parameters:
   # Route parameters
   empty_payload:

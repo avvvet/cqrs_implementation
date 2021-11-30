@@ -2,6 +2,7 @@ export enum EventsEnum {
   CONTACT_NUMBER_TYPE_ADDED = 'ContactNumberTypeAdded',
   CONTACT_NUMBER_TYPE_UPDATED = 'ContactNumberTypeUpdated',
   CONTACT_NUMBER_TYPE_ENABLED = 'ContactNumberTypeEnabled',
+  CONTACT_NUMBER_TYPE_DISABLED = 'ContactNumberTypeDisabled',
   CLIENT_CONTACT_NUMBER_ADDED = 'ClientContactNumberAdded'
 }
 
@@ -20,6 +21,10 @@ export const events: EventsType = {
   },
   [EventsEnum.CONTACT_NUMBER_TYPE_ENABLED]: {
     name: 'ContactNumberTypeEnabled',
+    description: 'The Contact Number Type has been enabled'
+  },
+  [EventsEnum.CONTACT_NUMBER_TYPE_DISABLED]: {
+    name: 'ContactNumberTypeDisabled',
     description: 'The Contact Number Type has been disabled'
   },
   [EventsEnum.CLIENT_CONTACT_NUMBER_ADDED]: {

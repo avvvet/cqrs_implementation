@@ -211,4 +211,56 @@ describe('ContactNumberSettingAggregate', function () {
       assert.throws(() => aggregate.canEnableContactNumberType('some-id'), ResourceNotFoundError);
     });
   });
+
+  describe('canDisableContactNumberType()', () => {
+    it('Test contact number type is enabled and can be disabled', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: '61948046abd55b1a8ec55671',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isTrue(aggregate.canDisableContactNumberType('61948046abd55b1a8ec55671'), 'Expected to disable');
+
+    });
+
+    it('Test contact number type is already disabled and can not be enabled', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: '61948046abd55b1a8ec55671',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isFalse(aggregate.canDisableContactNumberType('61948046abd55b1a8ec55671'), 'Expected not to disable');
+
+    });
+
+    it('Test resource not found', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: 'some-id',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.throws(() => aggregate.canDisableContactNumberType('other-id'), ResourceNotFoundError);
+    });
+  });
 });
