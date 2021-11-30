@@ -78,9 +78,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
               properties: {
                 code: {
                   type: 'string',
-                  enum: [
-                    'OBJECT_ADDITIONAL_PROPERTIES'
-                  ]
+                  enum: ['OBJECT_ADDITIONAL_PROPERTIES']
                 },
                 message: {
                   type: 'string'
@@ -129,9 +127,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
               properties: {
                 code: {
                   type: 'string',
-                  enum: [
-                    'OBJECT_ADDITIONAL_PROPERTIES'
-                  ]
+                  enum: ['OBJECT_ADDITIONAL_PROPERTIES']
                 },
                 message: {
                   type: 'string'
@@ -177,10 +173,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
       const otherHeaders = _.cloneDeep(headers);
 
       otherHeaders['x-request-jwt'] = 'invalid';
-      const res = await api
-        .post(`/contact-number-type/${contactNumberTypeId}/enable`)
-        .set(otherHeaders)
-        .send({});
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(otherHeaders).send({});
 
       assert.equal(res.statusCode, 401);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');

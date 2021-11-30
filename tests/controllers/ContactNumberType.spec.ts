@@ -245,7 +245,6 @@ describe('ContactNumberType', () => {
       await enableContactNumberType(req, res, next);
       assert.equal(next.callCount, 1, 'Expected next to be called');
     });
-
   });
 
   describe('disableContactNumberType()', () => {
@@ -292,6 +291,5 @@ describe('ContactNumberType', () => {
       await disableContactNumberType(req, res, next);
       assert.equal(next.callCount, 1, 'Expected next to be called');
     });
-
   });
 });
