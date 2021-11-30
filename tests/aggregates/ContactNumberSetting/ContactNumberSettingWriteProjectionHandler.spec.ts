@@ -6,9 +6,12 @@ import {
 } from '../../../src/aggregates/ContactNumberSetting/types';
 import {EventsEnum} from '../../../src/Events';
 import {EventStore} from '../../../src/models/EventStore';
-import {ContactNumberTypeAddedEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes';
-import {ContactNumberTypeEnabledEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeEnabledEventStoreDataInterface';
-import {ContactNumberTypeUpdatedEventStoreDataInterface} from '../../../src/types/EventStoreDataTypes/ContactNumberTypeUpdatedEventStoreDataInterface';
+import {
+  ContactNumberTypeAddedEventStoreDataInterface,
+  ContactNumberTypeUpdatedEventStoreDataInterface,
+  ContactNumberTypeEnabledEventStoreDataInterface,
+  ContactNumberTypeDisabledEventStoreDataInterface
+} from '../../../src/types/EventStoreDataTypes';
 
 describe('ContactNumberSettingWriteProjectionHandler', () => {
   describe('execute()', () => {
@@ -140,6 +143,80 @@ describe('ContactNumberSettingWriteProjectionHandler', () => {
         (response.types[1].status === undefined).should.be.true;
       });
     });
+
+    describe('CONTACT_NUMBER_TYPE_DISABLED', () => {
+      it('Test when record is found', () => {
+        const eventData: ContactNumberTypeDisabledEventStoreDataInterface = {
+          _id: 'id'
+        };
+        const event = new EventStore({
+          type: 'sample',
+          aggregate_id: {},
+          data: eventData,
+          sequence_id: 1,
+          meta_data: {},
+          correlation_id: 1
+        });
+        const aggregate: ContactNumberSettingAggregateRecordInterface = {
+          last_sequence_id: 0,
+          types: [
+            {
+              _id: 'id2',
+              name: 'oops2',
+              order: 2
+            },
+            {
+              _id: 'id',
+              name: 'oops',
+              order: 2
+            }
+          ]
+        };
+        const handler = new ContactNumberSettingWriteProjectionHandler();
+
+        const response = handler.execute(EventsEnum.CONTACT_NUMBER_TYPE_DISABLED, aggregate, event);
+
+        response.types.length.should.equal(2);
+        response.types[1].status.should.equal(ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED);
+      });
+
+      it('Test when record not found', () => {
+        const eventData: ContactNumberTypeDisabledEventStoreDataInterface = {
+          _id: 'id'
+        };
+        const event = new EventStore({
+          type: 'sample',
+          aggregate_id: {},
+          data: eventData,
+          sequence_id: 1,
+          meta_data: {},
+          correlation_id: 1
+        });
+        const aggregate: ContactNumberSettingAggregateRecordInterface = {
+          last_sequence_id: 0,
+          types: [
+            {
+              _id: 'id2',
+              name: 'oops2',
+              order: 2
+            },
+            {
+              _id: 'id3',
+              name: 'oops',
+              order: 2
+            }
+          ]
+        };
+        const handler = new ContactNumberSettingWriteProjectionHandler();
+
+        const response = handler.execute(EventsEnum.CONTACT_NUMBER_TYPE_DISABLED, aggregate, event);
+
+        response.types.length.should.equal(2);
+        (response.types[0].status === undefined).should.be.true;
+        (response.types[1].status === undefined).should.be.true;
+      });
+    });
+
     describe('CONTACT_NUMBER_TYPE_UPDATED', () => {
       it('Test when record is found and both order and name set', () => {
         const eventData: ContactNumberTypeUpdatedEventStoreDataInterface = {
