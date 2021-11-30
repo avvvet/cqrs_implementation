@@ -230,7 +230,7 @@ describe('ContactNumberSettingAggregate', function () {
 
     });
 
-    it('Test contact number type is already disabled and can not be enabled', () => {
+    it('Test contact number type is already disabled so that can not be disabled again', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {
