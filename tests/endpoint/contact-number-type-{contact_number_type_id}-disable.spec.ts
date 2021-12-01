@@ -9,7 +9,7 @@ import {ContactNumberTypeScenario} from './scenarios/ContactNumberTypeScenario';
 TestUtilsZSchemaFormatter.format();
 const validator = new ZSchema({});
 
-describe('/contact-number-type/{contact_number_type_id}/enable', () => {
+describe('/contact-number-type/{contact_number_type_id}/disable', () => {
   const jwtToken = getJWT({
     sub: '5ff6e098fb83732f8e23dc92',
     name: 'John Doe',
@@ -29,9 +29,9 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
   });
 
   describe('post', () => {
-    it('should respond with 202 Enable Contact Number Type', async () => {
+    it('should respond with 202 Disable Contact Number Type', async () => {
       await contactNumberTypeScenario.createContactNumberType(contactNumberTypeId);
-      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/disable`).set(headers).send({});
 
       res.statusCode.should.be.equal(202);
     });
@@ -52,7 +52,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
         },
         additionalProperties: false
       };
-      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/disable`).set(headers).send({});
 
       assert.equal(res.statusCode, 404);
       assert.isTrue(validator.validate(res.body, schema), 'response error message expected to be valid');
@@ -99,57 +99,9 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
         },
         additionalProperties: false
       };
-      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/disable`).set(headers).send({
         description: 'description'
       });
-
-      assert.equal(res.statusCode, 400);
-      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
-    });
-
-    it('should response with 400 bad request', async () => {
-      const schema = {
-        type: 'object',
-        required: ['code', 'message'],
-        properties: {
-          code: {
-            type: 'string',
-            enum: ['PATTERN']
-          },
-          message: {
-            type: 'string'
-          },
-          errors: {
-            type: 'array',
-            items: {
-              type: 'object',
-              required: ['code', 'message', 'path'],
-              properties: {
-                code: {
-                  type: 'string',
-                  enum: ['OBJECT_ADDITIONAL_PROPERTIES']
-                },
-                message: {
-                  type: 'string'
-                },
-                path: {
-                  type: 'array',
-                  items: {
-                    type: 'string'
-                  }
-                },
-                description: {
-                  type: 'string'
-                }
-              },
-              additionalProperties: false
-            }
-          }
-        },
-        additionalProperties: false
-      };
-      const contactNumberTypeId = '619b78e7ff235c9eww0cf0b6e1';
-      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(headers).send({});
 
       assert.equal(res.statusCode, 400);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
@@ -173,7 +125,7 @@ describe('/contact-number-type/{contact_number_type_id}/enable', () => {
       const otherHeaders = _.cloneDeep(headers);
 
       otherHeaders['x-request-jwt'] = 'invalid';
-      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/enable`).set(otherHeaders).send({});
+      const res = await api.post(`/contact-number-type/${contactNumberTypeId}/disable`).set(otherHeaders).send({});
 
       assert.equal(res.statusCode, 401);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');

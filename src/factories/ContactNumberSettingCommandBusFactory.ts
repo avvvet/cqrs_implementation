@@ -1,9 +1,14 @@
-import {AddContactNumberTypeCommandHandler} from '../aggregates/ContactNumberSetting/command-handlers/AddContactNumberTypeCommandHandler';
-import {UpdateContactNumberTypeCommandHandler} from '../aggregates/ContactNumberSetting/command-handlers/UpdateContactNumberTypeCommandHandler';
-import {EnableContactNumberTypeCommandHandler} from '../aggregates/ContactNumberSetting/command-handlers/EnableContactNumberTypeCommandHandler';
-import {ContactNumberSettingCommandBus} from '../aggregates/ContactNumberSetting/ContactNumberSettingCommandBus';
-import {ContactNumberSettingRepository} from '../aggregates/ContactNumberSetting/ContactNumberSettingRepository';
-import {ContactNumberSettingWriteProjectionHandler} from '../aggregates/ContactNumberSetting/ContactNumberSettingWriteProjectionHandler';
+import {
+  AddContactNumberTypeCommandHandler,
+  UpdateContactNumberTypeCommandHandler,
+  EnableContactNumberTypeCommandHandler,
+  DisableContactNumberTypeCommandHandler
+} from '../aggregates/ContactNumberSetting/command-handlers';
+import {
+  ContactNumberSettingCommandBus,
+  ContactNumberSettingRepository,
+  ContactNumberSettingWriteProjectionHandler
+} from '../aggregates/ContactNumberSetting';
 import {EventRepository} from '../EventRepository';
 
 /**
@@ -23,7 +28,8 @@ export class ContactNumberSettingCommandBusFactory {
     commandBus
       .addHandler(new AddContactNumberTypeCommandHandler(contactNumberSettingRepository))
       .addHandler(new UpdateContactNumberTypeCommandHandler(contactNumberSettingRepository))
-      .addHandler(new EnableContactNumberTypeCommandHandler(contactNumberSettingRepository));
+      .addHandler(new EnableContactNumberTypeCommandHandler(contactNumberSettingRepository))
+      .addHandler(new DisableContactNumberTypeCommandHandler(contactNumberSettingRepository));
     return commandBus;
   }
 }

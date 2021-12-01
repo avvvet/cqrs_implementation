@@ -89,6 +89,12 @@ export class ContactNumberSettingAggregate {
     return contactNumberType.status !== ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED;
   }
 
+  canDisableContactNumberType(contactNumberTypeId: string): boolean {
+    const contactNumberType = this.validateTypeExistence(contactNumberTypeId);
+
+    return contactNumberType.status !== ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED;
+  }
+
   getId(): typeof ContactNumberSettingAggregateId {
     return this.id;
   }
