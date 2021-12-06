@@ -4,5 +4,5 @@ export interface ClientContactNumberAddedEventStoreDataInterface extends BaseEve
   _id: string;
   client_id: string;
   type_id: string;
-  number: string;
+  contact_number: string;
 }

@@ -152,6 +152,36 @@ paths:
       summary: "Disable Contact Number Type"
       tags:
         - "Contact Number Type"
+  /client/{client_id}/contact-number:
+    parameters:
+      - $ref: "#/parameters/x_request_id"
+      - $ref: "#/parameters/x_request_jwt"
+      - $ref: "#/parameters/client_id"
+    post:
+      x-swagger-router-controller: "ClientContactNumber"
+      operationId: "addClientContactNumber"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/add_client_contact_number_payload"
+      responses:
+        202:
+          description: "Add Client contact number"
+          headers:
+            Location:
+              description: "URL to retrieve the client contact number created"
+              type: string
+        400:
+          description: "Validation error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/add_client_contact_number_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Add Client contact number"
+      tags:
+        - "Client Contact Number"
 parameters:
   # Route parameters
   empty_payload:
@@ -178,6 +208,13 @@ parameters:
     required: true
     pattern: ^[0-9a-fA-F]{24}$
     description: "Contact Number Type ID"
+    type: string
+  client_id:
+    name: client_id
+    in: path
+    required: true
+    pattern: ^[0-9a-fA-F]{24}$
+    description: "Client ID"
     type: string
   update_contact_number_type_payload:
     name: update_contact_number_type_payload
@@ -211,6 +248,23 @@ parameters:
           default: 1
       required:
         - name
+      additionalProperties: false
+  add_client_contact_number_payload:
+    name: add_client_contact_number_payload
+    in: body
+    required: true
+    description: "The payload used to create client contact number"
+    schema:
+      type: object
+      properties:
+        type_id:
+          type: string
+        contact_number:
+          type: string
+          pattern: (^[\+][0-9]{0,15}$)|(^0{1}[0-9]{0,14}$)
+      required:
+        - type_id
+        - contact_number
       additionalProperties: false
 definitions:
   unauthorize_error_model:
@@ -296,6 +350,47 @@ definitions:
                 - DUPLICATE_NAME
                 - MIN_LENGTH
                 - MAX_LENGTH
+            message:
+              type: string
+            path:
+              type: array
+              items:
+                type: string
+            description:
+              type: string
+          additionalProperties: false
+    additionalProperties: false
+  add_client_contact_number_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - REQUIRED
+          - MODEL_VALIDATION_FAILED
+          - SCHEMA_VALIDATION_FAILED
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+          required:
+            - code
+            - message
+            - path
+          properties:
+            code:
+              type: string
+              enum:
+                - OBJECT_ADDITIONAL_PROPERTIES
+                - OBJECT_MISSING_REQUIRED_PROPERTY
+                - CONTACT_NUMBER_TYPE_NOT_EXIST
+                - CONTACT_NUMBER_TYPE_DISABLED
+                - CONTACT_NUMBER_EXISTS
             message:
               type: string
             path:

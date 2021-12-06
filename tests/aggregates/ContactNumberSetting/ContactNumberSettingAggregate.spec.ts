@@ -262,4 +262,72 @@ describe('ContactNumberSettingAggregate', function () {
       assert.throws(() => aggregate.canDisableContactNumberType('other-id'), ResourceNotFoundError);
     });
   });
+
+  describe('isContactNumberTypeEnabled()', () => {
+    it('Test contact number type is enabled', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: '61948046abd55b1a8ec55671',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isTrue(aggregate.isContactNumberTypeEnabled('61948046abd55b1a8ec55671'), 'Expected to be enabled');
+    });
+
+    it('Test contact number type is disabled', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: '61948046abd55b1a8ec55671',
+            name: 'some-name',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_DISABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isNotTrue(aggregate.isContactNumberTypeEnabled('61948046abd55b1a8ec55671'), 'Expected to be disabled');
+    });
+  });
+
+  describe('isContactNumberTypeExists()', () => {
+    it('Test contact number type to exists', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: 'some-id',
+            name: 'mobile',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isTrue(aggregate.isContactNumberTypeExists('some-id'), 'Expected to exists');
+    });
+
+    it('Test contact number type not to exists', () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: 'some-id',
+            name: 'mobile',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      assert.isNotTrue(aggregate.isContactNumberTypeExists('other-id'), 'Expected to not exists');
+    });
+  });
 });
