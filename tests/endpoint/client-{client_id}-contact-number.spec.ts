@@ -76,9 +76,9 @@ describe('/client/{client_id}/contact-number', () => {
                     'PATTERN',
                     'OBJECT_ADDITIONAL_PROPERTIES',
                     'OBJECT_MISSING_REQUIRED_PROPERTY',
-                    'CONTACT_NUMBER_TYPE_NOT_EXIST',
+                    'CONTACT_NUMBR_TYPE_NOT_FOUND',
                     'CONTACT_NUMBER_TYPE_DISABLED',
-                    'CONTACT_NUMBER_EXISTS'
+                    'CONTACT_NUMBER_ALREADY_EXISTS'
                   ]
                 },
                 message: {

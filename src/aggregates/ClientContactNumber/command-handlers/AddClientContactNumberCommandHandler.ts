@@ -27,9 +27,9 @@ export class AddClientContactNumberCommandHandler implements ClientContactNumber
     if (!aggregateContactNumberSetting.isContactNumberTypeExists(commandData.type_id)) {
       throw new ValidationError('Not allowed. Contact number type not exists', [
         {
-          code: 'CONTACT_NUMBER_TYPE_NOT_EXIST',
+          code: 'CONTACT_NUMBR_TYPE_NOT_FOUND',
           message: `contact number type '${commandData.type_id}' not exists.`,
-          path: ['name']
+          path: ['type_id']
         }
       ]);
     } else if (!aggregateContactNumberSetting.isContactNumberTypeEnabled(commandData.type_id)) {
@@ -37,15 +37,15 @@ export class AddClientContactNumberCommandHandler implements ClientContactNumber
         {
           code: 'CONTACT_NUMBER_TYPE_DISABLED',
           message: `contact number type '${commandData.type_id}' is disabled.`,
-          path: ['name']
+          path: ['type_id']
         }
       ]);
     } else if (aggregateClientContactNumber.isClientContactNumberExists(commandData.contact_number)) {
       throw new ValidationError('Not allowed. Client Contact number exists', [
         {
-          code: 'CONTACT_NUMBER_EXISTS',
+          code: 'CONTACT_NUMBER_ALREADY_EXISTS',
           message: `name '${commandData.contact_number}' already exists.`,
-          path: ['name']
+          path: ['contact_number']
         }
       ]);
     }
@@ -56,7 +56,6 @@ export class AddClientContactNumberCommandHandler implements ClientContactNumber
         aggregate_id: aggregateId,
         data: {
           _id: commandData._id,
-          client_id: clientId,
           type_id: commandData.type_id,
           contact_number: commandData.contact_number
         } as ClientContactNumberAddedEventStoreDataInterface,

@@ -100,23 +100,21 @@ export class ContactNumberSettingAggregate {
   }
 
   isContactNumberTypeEnabled(contactNumberTypeId: string): boolean {
-    let isExist = false;
     const contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
 
     if (contactNumberType.status == ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED) {
-      isExist = true;
+      return true;
     }
-    return isExist;
+    return false;
   }
 
   isContactNumberTypeExists(contactNumberTypeId: string): boolean {
-    let isExist = false;
     const clientContactNumber = find(this.aggregate.types, {_id: contactNumberTypeId});
 
     if (clientContactNumber) {
-      isExist = true;
+      return true;
     }
-    return isExist;
+    return false;
   }
 
   getLastEventId(): number {

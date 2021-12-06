@@ -1,24 +1,23 @@
 import {find} from 'lodash';
-import {ClientContactNumberAggregateId} from '../ClientContactNumber/types';
+import {ClientContactNumberAggregateIdInterface} from '../ClientContactNumber/types';
 import {ClientContactNumberAggregateRecordInterface} from './types';
 
 export class ClientContactNumberAggregate {
   constructor(
-    private id: typeof ClientContactNumberAggregateId,
+    private id: ClientContactNumberAggregateIdInterface,
     private aggregate: ClientContactNumberAggregateRecordInterface
   ) {}
 
   isClientContactNumberExists(contactNumber: string): boolean {
-    let isExist = false;
     const clientContactNumber = find(this.aggregate.contact_numbers, {contact_number: contactNumber});
 
     if (clientContactNumber) {
-      isExist = true;
+      return true;
     }
-    return isExist;
+    return false;
   }
 
-  getId(): typeof ClientContactNumberAggregateId {
+  getId(): ClientContactNumberAggregateIdInterface {
     return this.id;
   }
 

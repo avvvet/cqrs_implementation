@@ -8,7 +8,6 @@ export class ClientContactNumberScenario extends AbstractScenario {
       type: ClientContactNumberCommandEnum.ADD_CLIENT_CONTACT_NUMBER,
       data: {
         _id: 'sample-client-contact-number-id',
-        client_id: 'client-id',
         type_id: 'sample-type-id',
         contact_number: '0911'
       }

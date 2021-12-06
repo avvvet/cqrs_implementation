@@ -4,7 +4,7 @@ import {ContactNumberSettingAggregate} from '../../../../src/aggregates/ContactN
 import {ContactNumberSettingRepository} from '../../../../src/aggregates/ContactNumberSetting/ContactNumberSettingRepository';
 import {ClientContactNumberAggregate} from '../../../../src/aggregates/ClientContactNumber/ClientContactNumberAggregate';
 import {ClientContactNumberRepository} from '../../../../src/aggregates/ClientContactNumber/ClientContactNumberRepository';
-import {ClientContactNumberAggregateId} from '../../../../src/aggregates/ClientContactNumber/types';
+import {ClientContactNumberAggregateIdInterface} from '../../../../src/aggregates/ClientContactNumber/types';
 import {AddClientContactNumberCommandDataInterface} from '../../../../src/aggregates/ClientContactNumber/types/CommandDataTypes';
 import {EventsEnum} from '../../../../src/Events';
 import {ClientContactNumberAddedEventStoreDataInterface} from '../../../../src/types/EventStoreDataTypes';
@@ -32,7 +32,12 @@ describe('AddClientContactNumberCommandHandler', () => {
       aggregateClientContactNumber.isClientContactNumberExists.returns(false);
 
       aggregateClientContactNumber.getLastEventId.returns(2);
-      aggregateClientContactNumber.getId.returns(ClientContactNumberAggregateId);
+      const clientContactNumberAggregateId = {
+        client_id: 'sample-client-id',
+        name: 'client_contact_number'
+      } as ClientContactNumberAggregateIdInterface;
+
+      aggregateClientContactNumber.getId.returns(clientContactNumberAggregateId);
       const clientId = 'sample-client-id';
       const handler = new AddClientContactNumberCommandHandler(
         repositoryClientContactNumber,
@@ -40,7 +45,6 @@ describe('AddClientContactNumberCommandHandler', () => {
       );
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
-        client_id: 'sample-client-id',
         type_id: 'name',
         contact_number: '0911'
       };
@@ -52,10 +56,9 @@ describe('AddClientContactNumberCommandHandler', () => {
       const eventData = [
         {
           type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
-          aggregate_id: {name: 'client_contact_number'},
+          aggregate_id: {client_id: 'sample-client-id', name: 'client_contact_number'},
           data: {
             _id: 'id',
-            client_id: 'sample-client-id',
             type_id: command.type_id,
             contact_number: command.contact_number
           } as ClientContactNumberAddedEventStoreDataInterface,
@@ -70,7 +73,6 @@ describe('AddClientContactNumberCommandHandler', () => {
       const clientId = 'sample-client-id';
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
-        client_id: 'sample-client-id',
         type_id: 'name',
         contact_number: '0911'
       };
@@ -103,7 +105,6 @@ describe('AddClientContactNumberCommandHandler', () => {
       const clientId = 'sample-client-id';
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
-        client_id: 'sample-client-id',
         type_id: 'name',
         contact_number: '0911'
       };
@@ -138,7 +139,6 @@ describe('AddClientContactNumberCommandHandler', () => {
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
         type_id: 'name',
-        client_id: 'sample-client-id',
         contact_number: '0911'
       };
       const repositoryClientContactNumber = stubConstructor(ClientContactNumberRepository);

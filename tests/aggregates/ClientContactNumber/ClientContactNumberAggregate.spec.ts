@@ -1,15 +1,18 @@
 import {assert} from 'chai';
 import {ClientContactNumberAggregate} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberAggregate';
-import {ClientContactNumberAggregateId} from '../../../src/aggregates/ClientContactNumber/types';
+import {ClientContactNumberAggregateIdInterface} from '../../../src/aggregates/ClientContactNumber/types';
 
 describe('ClientContactNumberAggregate', function () {
   describe('isClientContactNumberExists()', () => {
     it('Test Client contact number exists', () => {
-      const aggregate = new ClientContactNumberAggregate(ClientContactNumberAggregateId, {
+      const aggregateId = {
+        client_id: 'client-id',
+        name: 'client_contact_number'
+      } as ClientContactNumberAggregateIdInterface;
+      const aggregate = new ClientContactNumberAggregate(aggregateId, {
         contact_numbers: [
           {
             _id: '61948046abd55b1a8ec55671',
-            client_id: 'client-id',
             type_id: 'some-name',
             contact_number: '091'
           }
@@ -21,11 +24,14 @@ describe('ClientContactNumberAggregate', function () {
     });
 
     it('Test Client contact number not exists', () => {
-      const aggregate = new ClientContactNumberAggregate(ClientContactNumberAggregateId, {
+      const aggregateId = {
+        client_id: 'client-id',
+        name: 'client_contact_number'
+      } as ClientContactNumberAggregateIdInterface;
+      const aggregate = new ClientContactNumberAggregate(aggregateId, {
         contact_numbers: [
           {
             _id: '61948046abd55b1a8ec55671',
-            client_id: 'client-id',
             type_id: 'some-name',
             contact_number: '09111111'
           }

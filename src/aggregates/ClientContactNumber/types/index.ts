@@ -1,4 +1,4 @@
-export {ClientContactNumberAggregateId} from './ClientContactNumberAggregateId';
+export {ClientContactNumberAggregateIdInterface} from './ClientContactNumberAggregateIdInterface';
 export {ClientContactNumberCommandEnum} from './ClientContactNumberCommandEnum';
 export {ClientContactNumberAggregateRecordInterface} from './ClientContactNumberAggregateRecordInterface';
 export {ClientContactNumberCommandInterface} from './ClientContactNumberCommandInterface';

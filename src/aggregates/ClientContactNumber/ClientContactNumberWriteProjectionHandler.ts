@@ -19,7 +19,6 @@ implements WriteProjectionInterface<ClientContactNumberAggregateRecordInterface>
         const eventData = event.data as ClientContactNumberAddedEventStoreDataInterface;
         const contactNumber: ClientContactNumberInterface = {
           _id: eventData._id,
-          client_id: eventData.client_id,
           type_id: eventData.type_id,
           contact_number: eventData.contact_number
         };

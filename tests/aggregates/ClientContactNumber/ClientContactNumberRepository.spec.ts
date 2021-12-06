@@ -1,7 +1,7 @@
 import sinon from 'ts-sinon';
 import {ClientContactNumberRepository} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberRepository';
 import {ClientContactNumberWriteProjectionHandler} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberWriteProjectionHandler';
-import {ClientContactNumberAggregateId} from '../../../src/aggregates/ClientContactNumber/types';
+import {ClientContactNumberAggregateIdInterface} from '../../../src/aggregates/ClientContactNumber/types';
 import {EventRepository} from '../../../src/EventRepository';
 import {EventsEnum} from '../../../src/Events';
 import {EventStore} from '../../../src/models/EventStore';
@@ -20,11 +20,11 @@ describe('ContactNumberSettingRepository class', () => {
       const leftFoldEvents = sinon.stub(eventRepository, 'leftFoldEvents').resolves();
       const sequenceId = 100;
       const aggregate = await clientContactNumberRepository.getAggregate('client-id', sequenceId);
-      const aggregateClientContactNumber = {client_id: 'client-id', name: 'client_contact_number'};
+      const aggregateClientContactNumberId = {client_id: 'client-id', name: 'client_contact_number'};
 
-      leftFoldEvents.should.have.been.calledWith(writeProjectionHandler, aggregateClientContactNumber, sequenceId);
+      leftFoldEvents.should.have.been.calledWith(writeProjectionHandler, aggregateClientContactNumberId, sequenceId);
 
-      aggregate.getId().should.deep.equal(aggregateClientContactNumber);
+      aggregate.getId().should.deep.equal(aggregateClientContactNumberId);
     });
   });
 
@@ -34,13 +34,16 @@ describe('ContactNumberSettingRepository class', () => {
       const writeProjectionHandler = new ClientContactNumberWriteProjectionHandler();
       const repository = new ClientContactNumberRepository(eventRepository, writeProjectionHandler);
       const save = sinon.stub(eventRepository, 'save').resolves([]);
+      const aggregateClientContactNumberId = {
+        client_id: 'client-id',
+        name: 'client_contact_number'
+      } as ClientContactNumberAggregateIdInterface;
       const events = [
         {
           type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
-          aggregate_id: ClientContactNumberAggregateId,
+          aggregate_id: aggregateClientContactNumberId,
           data: {
             _id: 'some id',
-            client_id: 'client-id',
             type_id: 'type-id',
             contact_number: '0911'
           },

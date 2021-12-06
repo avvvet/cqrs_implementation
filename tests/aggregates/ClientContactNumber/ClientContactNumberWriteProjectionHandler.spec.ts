@@ -11,7 +11,6 @@ describe('ClientContactNumberWriteProjectionHandler', () => {
       it('Test when aggregate is empty', () => {
         const eventData: ClientContactNumberAddedEventStoreDataInterface = {
           _id: 'id',
-          client_id: 'client-id',
           type_id: 'name',
           contact_number: '0911'
         };
@@ -35,7 +34,6 @@ describe('ClientContactNumberWriteProjectionHandler', () => {
       it('Test when there is already a record in aggregate', () => {
         const eventData: ClientContactNumberAddedEventStoreDataInterface = {
           _id: 'id',
-          client_id: 'client-id',
           type_id: 'name',
           contact_number: '0911'
         };
@@ -53,7 +51,6 @@ describe('ClientContactNumberWriteProjectionHandler', () => {
           contact_numbers: [
             {
               _id: 'sample id',
-              client_id: 'client-id',
               type_id: 'name',
               contact_number: '0911'
             }

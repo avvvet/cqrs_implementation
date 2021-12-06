@@ -1,6 +1,7 @@
 import {BaseAggregateIdInterface} from 'BaseAggregateIdInterface';
 import {AggregateIdType} from '../../../models/EventStore';
 
-export const ClientContactNumberAggregateId: BaseAggregateIdInterface & AggregateIdType = {
-  name: 'client_contact_number'
-};
+export interface ClientContactNumberAggregateIdInterface extends BaseAggregateIdInterface, AggregateIdType {
+  client_id: string;
+  name: 'client_contact_number';
+}
