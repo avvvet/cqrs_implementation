@@ -44,7 +44,7 @@ export class AddClientContactNumberCommandHandler implements ClientContactNumber
       throw new ValidationError('Not allowed. Client Contact number exists', [
         {
           code: 'CONTACT_NUMBER_ALREADY_EXISTS',
-          message: `name '${commandData.contact_number}' already exists.`,
+          message: `Client contact number '${commandData.contact_number}' already exists.`,
           path: ['contact_number']
         }
       ]);

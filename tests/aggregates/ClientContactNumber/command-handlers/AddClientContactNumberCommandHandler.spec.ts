@@ -94,9 +94,19 @@ describe('AddClientContactNumberCommandHandler', () => {
         repositoryContactNumberSetting
       );
 
-      await handler
+      const error = await handler
         .execute(clientId, command)
         .should.have.been.rejectedWith(ValidationError, 'Not allowed. Contact number type not exists');
+
+      error.should.deep.equal(
+        new ValidationError('Not allowed. Contact number type not exists', [
+          {
+            code: 'CONTACT_NUMBR_TYPE_NOT_FOUND',
+            message: `contact number type '${command.type_id}' not exists.`,
+            path: ['type_id']
+          }
+        ])
+      );
 
       aggregateContactNumberSetting.isContactNumberTypeExists.should.have.been.calledWith(command.type_id);
       aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.not.called;
@@ -127,9 +137,19 @@ describe('AddClientContactNumberCommandHandler', () => {
         repositoryContactNumberSetting
       );
 
-      await handler
+      const error = await handler
         .execute(clientId, command)
-        .should.have.been.rejectedWith(Error, 'Not allowed. Contact number type is disabled');
+        .should.have.been.rejectedWith(ValidationError, 'Not allowed. Contact number type is disabled');
+
+      error.should.deep.equal(
+        new ValidationError('Not allowed. Contact number type is disabled', [
+          {
+            code: 'CONTACT_NUMBER_TYPE_DISABLED',
+            message: `contact number type '${command.type_id}' is disabled.`,
+            path: ['type_id']
+          }
+        ])
+      );
 
       aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
       aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.calledWith(command.type_id);
@@ -161,10 +181,19 @@ describe('AddClientContactNumberCommandHandler', () => {
         repositoryContactNumberSetting
       );
 
-      await handler
+      const error = await handler
         .execute(clientId, command)
         .should.have.been.rejectedWith(ValidationError, 'Not allowed. Client Contact number exists');
 
+      error.should.deep.equal(
+        new ValidationError('Not allowed. Client Contact number exists', [
+          {
+            code: 'CONTACT_NUMBER_ALREADY_EXISTS',
+            message: `Client contact number '${command.contact_number}' already exists.`,
+            path: ['contact_number']
+          }
+        ])
+      );
       aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
       aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.calledWith(command.type_id);
       aggregateClientContactNumber.isClientContactNumberExists.should.have.been.calledWith(command.contact_number);
