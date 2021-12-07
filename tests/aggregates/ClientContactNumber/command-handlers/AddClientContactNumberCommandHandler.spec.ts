@@ -8,6 +8,7 @@ import {ClientContactNumberAggregateIdInterface} from '../../../../src/aggregate
 import {AddClientContactNumberCommandDataInterface} from '../../../../src/aggregates/ClientContactNumber/types/CommandDataTypes';
 import {EventsEnum} from '../../../../src/Events';
 import {ClientContactNumberAddedEventStoreDataInterface} from '../../../../src/types/EventStoreDataTypes';
+import {ValidationError} from 'a24-node-error-utils';
 
 describe('AddClientContactNumberCommandHandler', () => {
   afterEach(() => {
@@ -52,6 +53,8 @@ describe('AddClientContactNumberCommandHandler', () => {
       await handler.execute(clientId, command);
 
       aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.been.calledWith(command.type_id);
+      aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
+      aggregateClientContactNumber.isClientContactNumberExists.should.have.calledWith(command.contact_number);
 
       const eventData = [
         {
@@ -69,7 +72,7 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.getCall(0).args[0].should.deep.equal(eventData);
     });
 
-    it('Test failure scenario', async () => {
+    it('Test failure scenario : isContactNumberTypeEnabled and isClientContactNumberExists', async () => {
       const clientId = 'sample-client-id';
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
@@ -93,7 +96,7 @@ describe('AddClientContactNumberCommandHandler', () => {
 
       await handler
         .execute(clientId, command)
-        .should.have.been.rejectedWith(Error, 'Not allowed. Contact number type not exists');
+        .should.have.been.rejectedWith(ValidationError, 'Not allowed. Contact number type not exists');
 
       aggregateContactNumberSetting.isContactNumberTypeExists.should.have.been.calledWith(command.type_id);
       aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.not.called;
@@ -101,7 +104,7 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.should.not.have.been.called;
     });
 
-    it('Test failure scenario', async () => {
+    it('Test failure scenario : isClientContactNumberExists', async () => {
       const clientId = 'sample-client-id';
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
@@ -160,7 +163,7 @@ describe('AddClientContactNumberCommandHandler', () => {
 
       await handler
         .execute(clientId, command)
-        .should.have.been.rejectedWith(Error, 'Not allowed. Client Contact number exists');
+        .should.have.been.rejectedWith(ValidationError, 'Not allowed. Client Contact number exists');
 
       aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
       aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.calledWith(command.type_id);
