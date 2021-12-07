@@ -29,7 +29,7 @@ describe('ContactNumberSettingRepository class', () => {
   });
 
   describe('save()', () => {
-    it('Test call eventRepository', async () => {
+    it('Test call eventRepository with ClientContactNumberAdded event type', async () => {
       const eventRepository = new EventRepository(EventStore, 'some-id');
       const writeProjectionHandler = new ClientContactNumberWriteProjectionHandler();
       const repository = new ClientContactNumberRepository(eventRepository, writeProjectionHandler);
@@ -41,6 +41,32 @@ describe('ContactNumberSettingRepository class', () => {
       const events = [
         {
           type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
+          aggregate_id: aggregateClientContactNumberId,
+          data: {
+            _id: 'some id',
+            type_id: 'type-id',
+            contact_number: '0911'
+          },
+          sequence_id: 10
+        }
+      ];
+
+      await repository.save(events);
+      save.should.have.been.calledWith(events);
+    });
+
+    it('Test call eventRepository with clientContactNumberRemoved type', async () => {
+      const eventRepository = new EventRepository(EventStore, 'some-id');
+      const writeProjectionHandler = new ClientContactNumberWriteProjectionHandler();
+      const repository = new ClientContactNumberRepository(eventRepository, writeProjectionHandler);
+      const save = sinon.stub(eventRepository, 'save').resolves([]);
+      const aggregateClientContactNumberId = {
+        client_id: 'client-id',
+        name: 'client_contact_number'
+      } as ClientContactNumberAggregateIdInterface;
+      const events = [
+        {
+          type: EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED,
           aggregate_id: aggregateClientContactNumberId,
           data: {
             _id: 'some id',

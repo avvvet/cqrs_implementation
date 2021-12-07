@@ -182,6 +182,33 @@ paths:
       summary: "Add Client contact number"
       tags:
         - "Client Contact Number"
+  /client/{client_id}/contact-number/{client_contact_number_id}:
+    parameters:
+      - $ref: "#/parameters/x_request_id"
+      - $ref: "#/parameters/x_request_jwt"
+      - $ref: "#/parameters/client_id"
+      - $ref: "#/parameters/client_contact_number_id"
+    delete:
+      x-swagger-router-controller: "ClientContactNumber"
+      operationId: "removeClientContactNumber"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/empty_payload"
+      responses:
+        202:
+          description: "Remove Client contact number"
+        400:
+          description: "Validation error."
+          schema:
+            $ref: "#/definitions/remove_client_contact_number_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Remove Client contact number"
+      tags:
+        - "Client Contact Number"
 parameters:
   # Route parameters
   empty_payload:
@@ -215,6 +242,13 @@ parameters:
     required: true
     pattern: ^[0-9a-fA-F]{24}$
     description: "Client ID"
+    type: string
+  client_contact_number_id:
+    name: client_contact_number_id
+    in: path
+    required: true
+    pattern: ^[0-9a-fA-F]{24}$
+    description: "Client contact number ID"
     type: string
   update_contact_number_type_payload:
     name: update_contact_number_type_payload
@@ -391,6 +425,46 @@ definitions:
                 - CONTACT_NUMBR_TYPE_NOT_FOUND
                 - CONTACT_NUMBER_TYPE_DISABLED
                 - CONTACT_NUMBER_ALREADY_EXISTS
+            message:
+              type: string
+            path:
+              type: array
+              items:
+                type: string
+            description:
+              type: string
+          additionalProperties: false
+    additionalProperties: false
+  remove_client_contact_number_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - REQUIRED
+          - MODEL_VALIDATION_FAILED
+          - SCHEMA_VALIDATION_FAILED
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+          required:
+            - code
+            - message
+            - path
+          properties:
+            code:
+              type: string
+              enum:
+                - OBJECT_ADDITIONAL_PROPERTIES
+                - OBJECT_MISSING_REQUIRED_PROPERTY
+                - CONTACT_NUMBER_NOT_FOUND
+                - CONTACT_NUMBER_ALREADY_REMOVED
             message:
               type: string
             path:

@@ -7,7 +7,7 @@ export class ClientContactNumberScenario extends AbstractScenario {
     await ClientContactNumberCommandBusFactory.getCommandBus(this.eventRepository).execute(client_id, {
       type: ClientContactNumberCommandEnum.ADD_CLIENT_CONTACT_NUMBER,
       data: {
-        _id: 'sample-client-contact-number-id',
+        _id: '61b01b90ec281fb7d43262ae',
         type_id: 'sample-type-id',
         contact_number: '0911'
       }
