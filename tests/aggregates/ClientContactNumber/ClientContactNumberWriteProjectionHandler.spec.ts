@@ -7,7 +7,7 @@ import {ClientContactNumberAddedEventStoreDataInterface} from '../../../src/type
 
 describe('ClientContactNumberWriteProjectionHandler', () => {
   describe('execute()', () => {
-    describe('CLIENT_CONTACT_NUMBER_TYPE_ADDED', () => {
+    describe('CLIENT_CONTACT_NUMBER_ADDED', () => {
       it('Test when aggregate is empty', () => {
         const eventData: ClientContactNumberAddedEventStoreDataInterface = {
           _id: 'id',
