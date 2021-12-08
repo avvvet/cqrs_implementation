@@ -28,9 +28,9 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.resolves();
       repositoryContactNumberSetting.save.resolves();
 
-      aggregateContactNumberSetting.isContactNumberTypeExists.returns(true);
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.returns(true);
-      aggregateClientContactNumber.isClientContactNumberExists.returns(false);
+      aggregateContactNumberSetting.contactNumberTypeExists.returns(true);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.returns(true);
+      aggregateClientContactNumber.clientContactNumberExists.returns(false);
 
       aggregateClientContactNumber.getLastEventId.returns(2);
       const clientContactNumberAggregateId = {
@@ -52,9 +52,9 @@ describe('AddClientContactNumberCommandHandler', () => {
 
       await handler.execute(clientId, command);
 
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.been.calledWith(command.type_id);
-      aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
-      aggregateClientContactNumber.isClientContactNumberExists.should.have.calledWith(command.contact_number);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.should.have.been.calledWith(command.type_id);
+      aggregateContactNumberSetting.contactNumberTypeExists.should.have.been.calledWith(command.type_id);
+      aggregateClientContactNumber.clientContactNumberExists.should.have.been.calledWith(command.contact_number);
 
       const eventData = [
         {
@@ -72,7 +72,7 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.getCall(0).args[0].should.deep.equal(eventData);
     });
 
-    it('Test failure scenario : isContactNumberTypeEnabled and isClientContactNumberExists', async () => {
+    it('Test failure scenario : contactNumberTypeEnabled and clientContactNumberExists', async () => {
       const clientId = 'sample-client-id';
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
@@ -88,7 +88,7 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
       repositoryContactNumberSetting.getAggregate.resolves(aggregateContactNumberSetting);
 
-      aggregateContactNumberSetting.isContactNumberTypeExists.returns(false);
+      aggregateContactNumberSetting.contactNumberTypeExists.returns(false);
       const handler = new AddClientContactNumberCommandHandler(
         repositoryClientContactNumber,
         repositoryContactNumberSetting
@@ -108,13 +108,13 @@ describe('AddClientContactNumberCommandHandler', () => {
         ])
       );
 
-      aggregateContactNumberSetting.isContactNumberTypeExists.should.have.been.calledWith(command.type_id);
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.not.called;
-      aggregateClientContactNumber.isClientContactNumberExists.should.have.not.called;
-      repositoryClientContactNumber.save.should.not.have.been.called;
+      aggregateContactNumberSetting.contactNumberTypeExists.should.have.been.calledWith(command.type_id);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.should.have.not.called;
+      aggregateClientContactNumber.clientContactNumberExists.should.have.not.called;
+      repositoryClientContactNumber.save.should.have.not.called;
     });
 
-    it('Test failure scenario : isClientContactNumberExists', async () => {
+    it('Test failure scenario : clientContactNumberExists', async () => {
       const clientId = 'sample-client-id';
       const command: AddClientContactNumberCommandDataInterface = {
         _id: 'id',
@@ -130,8 +130,8 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
       repositoryContactNumberSetting.getAggregate.resolves(aggregateContactNumberSetting);
 
-      aggregateContactNumberSetting.isContactNumberTypeExists.returns(true);
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.returns(false);
+      aggregateContactNumberSetting.contactNumberTypeExists.returns(true);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.returns(false);
       const handler = new AddClientContactNumberCommandHandler(
         repositoryClientContactNumber,
         repositoryContactNumberSetting
@@ -151,10 +151,10 @@ describe('AddClientContactNumberCommandHandler', () => {
         ])
       );
 
-      aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.calledWith(command.type_id);
-      aggregateClientContactNumber.isClientContactNumberExists.should.have.not.called;
-      repositoryClientContactNumber.save.should.not.have.been.called;
+      aggregateContactNumberSetting.contactNumberTypeExists.should.have.been.calledWith(command.type_id);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.should.have.been.calledWith(command.type_id);
+      aggregateClientContactNumber.clientContactNumberExists.should.have.not.called;
+      repositoryClientContactNumber.save.should.have.not.called;
     });
 
     it('Test failure scenario', async () => {
@@ -173,9 +173,9 @@ describe('AddClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
       repositoryContactNumberSetting.getAggregate.resolves(aggregateContactNumberSetting);
 
-      aggregateContactNumberSetting.isContactNumberTypeExists.returns(true);
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.returns(true);
-      aggregateClientContactNumber.isClientContactNumberExists.returns(true);
+      aggregateContactNumberSetting.contactNumberTypeExists.returns(true);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.returns(true);
+      aggregateClientContactNumber.clientContactNumberExists.returns(true);
       const handler = new AddClientContactNumberCommandHandler(
         repositoryClientContactNumber,
         repositoryContactNumberSetting
@@ -194,10 +194,10 @@ describe('AddClientContactNumberCommandHandler', () => {
           }
         ])
       );
-      aggregateContactNumberSetting.isContactNumberTypeExists.should.have.calledWith(command.type_id);
-      aggregateContactNumberSetting.isContactNumberTypeEnabled.should.have.calledWith(command.type_id);
-      aggregateClientContactNumber.isClientContactNumberExists.should.have.been.calledWith(command.contact_number);
-      repositoryClientContactNumber.save.should.not.have.been.called;
+      aggregateContactNumberSetting.contactNumberTypeExists.should.have.been.calledWith(command.type_id);
+      aggregateContactNumberSetting.contactNumberTypeEnabled.should.have.been.calledWith(command.type_id);
+      aggregateClientContactNumber.clientContactNumberExists.should.have.been.calledWith(command.contact_number);
+      repositoryClientContactNumber.save.should.have.not.called;
     });
   });
 });

@@ -99,16 +99,13 @@ export class ContactNumberSettingAggregate {
     return this.id;
   }
 
-  isContactNumberTypeEnabled(contactNumberTypeId: string): boolean {
+  contactNumberTypeEnabled(contactNumberTypeId: string): boolean {
     const contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
 
-    if (contactNumberType.status == ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED) {
-      return true;
-    }
-    return false;
+    return contactNumberType.status == ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED;
   }
 
-  isContactNumberTypeExists(contactNumberTypeId: string): boolean {
+  contactNumberTypeExists(contactNumberTypeId: string): boolean {
     const clientContactNumber = find(this.aggregate.types, {_id: contactNumberTypeId});
 
     if (clientContactNumber) {

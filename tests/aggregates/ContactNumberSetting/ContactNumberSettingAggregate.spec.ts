@@ -263,7 +263,7 @@ describe('ContactNumberSettingAggregate', function () {
     });
   });
 
-  describe('isContactNumberTypeEnabled()', () => {
+  describe('contactNumberTypeEnabled()', () => {
     it('Test contact number type is enabled', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
@@ -277,7 +277,7 @@ describe('ContactNumberSettingAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isTrue(aggregate.isContactNumberTypeEnabled('61948046abd55b1a8ec55671'), 'Expected to be enabled');
+      assert.isTrue(aggregate.contactNumberTypeEnabled('61948046abd55b1a8ec55671'), 'Expected to be enabled');
     });
 
     it('Test contact number type is disabled', () => {
@@ -293,11 +293,11 @@ describe('ContactNumberSettingAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isNotTrue(aggregate.isContactNumberTypeEnabled('61948046abd55b1a8ec55671'), 'Expected to be disabled');
+      assert.isNotTrue(aggregate.contactNumberTypeEnabled('61948046abd55b1a8ec55671'), 'Expected to be disabled');
     });
   });
 
-  describe('isContactNumberTypeExists()', () => {
+  describe('contactNumberTypeExists()', () => {
     it('Test contact number type to exists', () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
@@ -311,7 +311,7 @@ describe('ContactNumberSettingAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isTrue(aggregate.isContactNumberTypeExists('some-id'), 'Expected to exists');
+      assert.isTrue(aggregate.contactNumberTypeExists('some-id'), 'Expected to exists');
     });
 
     it('Test contact number type not to exists', () => {
@@ -327,7 +327,7 @@ describe('ContactNumberSettingAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isNotTrue(aggregate.isContactNumberTypeExists('other-id'), 'Expected to not exists');
+      assert.isNotTrue(aggregate.contactNumberTypeExists('other-id'), 'Expected to not exists');
     });
   });
 });

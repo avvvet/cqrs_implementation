@@ -3,7 +3,7 @@ import {ClientContactNumberAggregate} from '../../../src/aggregates/ClientContac
 import {ClientContactNumberAggregateIdInterface} from '../../../src/aggregates/ClientContactNumber/types';
 
 describe('ClientContactNumberAggregate', function () {
-  describe('isClientContactNumberExists()', () => {
+  describe('clientContactNumberExists()', () => {
     it('Test Client contact number exists', () => {
       const aggregateId = {
         client_id: 'client-id',
@@ -20,7 +20,7 @@ describe('ClientContactNumberAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isTrue(aggregate.isClientContactNumberExists('091'), 'Expected client contact number exists');
+      assert.isTrue(aggregate.clientContactNumberExists('091'), 'Expected client contact number exists');
     });
 
     it('Test Client contact number not exists', () => {
@@ -39,7 +39,7 @@ describe('ClientContactNumberAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isNotTrue(aggregate.isClientContactNumberExists('09222222'), 'Expected client contact number not exists');
+      assert.isNotTrue(aggregate.clientContactNumberExists('09222222'), 'Expected client contact number not exists');
     });
   });
 });
