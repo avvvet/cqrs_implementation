@@ -8,8 +8,8 @@ export class ClientContactNumberAggregate {
     private aggregate: ClientContactNumberAggregateRecordInterface
   ) {}
 
-  clientContactNumberExists(contactNumber: string): boolean {
-    const clientContactNumber = find(this.aggregate.contact_numbers, {contact_number: contactNumber});
+  clientContactNumberExists(contactNumber: string, contactNumberType: string): boolean {
+    const clientContactNumber = find(this.aggregate.contact_numbers, {contact_number: contactNumber, type_id: contactNumberType});
 
     if (clientContactNumber) {
       return true;

@@ -40,7 +40,7 @@ export class AddClientContactNumberCommandHandler implements ClientContactNumber
           path: ['type_id']
         }
       ]);
-    } else if (aggregateClientContactNumber.clientContactNumberExists(commandData.contact_number)) {
+    } else if (aggregateClientContactNumber.clientContactNumberExists(commandData.contact_number, commandData.type_id)) {
       throw new ValidationError('Not allowed. Client Contact number exists', [
         {
           code: 'CONTACT_NUMBER_ALREADY_EXISTS',
