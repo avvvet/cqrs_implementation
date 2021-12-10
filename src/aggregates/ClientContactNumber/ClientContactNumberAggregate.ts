@@ -9,7 +9,10 @@ export class ClientContactNumberAggregate {
   ) {}
 
   clientContactNumberExists(contactNumber: string, contactNumberType: string): boolean {
-    const clientContactNumber = find(this.aggregate.contact_numbers, {contact_number: contactNumber, type_id: contactNumberType});
+    const clientContactNumber = find(this.aggregate.contact_numbers, {
+      contact_number: contactNumber,
+      type_id: contactNumberType
+    });
 
     if (clientContactNumber) {
       return true;
@@ -17,7 +20,7 @@ export class ClientContactNumberAggregate {
     return false;
   }
 
-  isClientContactNumberIdExists(contactNumberId: string): boolean {
+  clientContactNumberIdExists(contactNumberId: string): boolean {
     const clientContactNumberId = find(this.aggregate.contact_numbers, {_id: contactNumberId});
 
     if (clientContactNumberId) {
@@ -26,7 +29,7 @@ export class ClientContactNumberAggregate {
     return false;
   }
 
-  isClientContactNumberRemoved(contactNumberId: string): boolean {
+  clientContactNumberRemoved(contactNumberId: string): boolean {
     const clientContactNumber = find(this.aggregate.contact_numbers, {_id: contactNumberId});
 
     if (clientContactNumber.status == ClientContactNumberStatusEnum.CLIENT_CONTACT_NUMBER_STATUS_REMOVED) {

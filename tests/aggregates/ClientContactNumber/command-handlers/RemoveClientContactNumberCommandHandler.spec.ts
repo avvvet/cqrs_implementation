@@ -19,8 +19,8 @@ describe('RemoveClientContactNumberCommandHandler', () => {
 
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
 
-      aggregateClientContactNumber.isClientContactNumberIdExists.returns(true);
-      aggregateClientContactNumber.isClientContactNumberRemoved.returns(false);
+      aggregateClientContactNumber.clientContactNumberIdExists.returns(true);
+      aggregateClientContactNumber.clientContactNumberRemoved.returns(false);
 
       aggregateClientContactNumber.getLastEventId.returns(2);
       const clientContactNumberAggregateId = {
@@ -37,8 +37,8 @@ describe('RemoveClientContactNumberCommandHandler', () => {
 
       await handler.execute(clientId, command);
 
-      aggregateClientContactNumber.isClientContactNumberIdExists.should.have.calledOnce;
-      aggregateClientContactNumber.isClientContactNumberRemoved.should.have.calledWith(command._id);
+      aggregateClientContactNumber.clientContactNumberIdExists.should.have.calledOnce;
+      aggregateClientContactNumber.clientContactNumberRemoved.should.have.calledWith(command._id);
 
       const eventData = [
         {
@@ -54,7 +54,7 @@ describe('RemoveClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.getCall(0).args[0].should.deep.equal(eventData);
     });
 
-    it('Test failure scenario : isClientContactNumberIdExists', async () => {
+    it('Test failure scenario : clientContactNumberIdExists', async () => {
       const clientId = 'sample-client-id';
       const command: RemoveClientContactNumberCommandDataInterface = {
         _id: 'id'
@@ -63,7 +63,7 @@ describe('RemoveClientContactNumberCommandHandler', () => {
       const aggregateClientContactNumber = stubConstructor(ClientContactNumberAggregate);
 
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
-      aggregateClientContactNumber.isClientContactNumberIdExists.returns(false);
+      aggregateClientContactNumber.clientContactNumberIdExists.returns(false);
       const handler = new RemoveClientContactNumberCommandHandler(repositoryClientContactNumber);
 
       const error = await handler
@@ -80,11 +80,11 @@ describe('RemoveClientContactNumberCommandHandler', () => {
         ])
       );
 
-      aggregateClientContactNumber.isClientContactNumberRemoved.should.have.not.called;
+      aggregateClientContactNumber.clientContactNumberRemoved.should.have.not.called;
       repositoryClientContactNumber.save.should.not.have.been.called;
     });
 
-    it('Test failure scenario : isClientContactNumberRemoved', async () => {
+    it('Test failure scenario : clientContactNumberRemoved', async () => {
       const clientId = 'sample-client-id';
       const command: RemoveClientContactNumberCommandDataInterface = {
         _id: 'id'
@@ -93,8 +93,8 @@ describe('RemoveClientContactNumberCommandHandler', () => {
       const aggregateClientContactNumber = stubConstructor(ClientContactNumberAggregate);
 
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
-      aggregateClientContactNumber.isClientContactNumberIdExists.returns(true);
-      aggregateClientContactNumber.isClientContactNumberRemoved.returns(true);
+      aggregateClientContactNumber.clientContactNumberIdExists.returns(true);
+      aggregateClientContactNumber.clientContactNumberRemoved.returns(true);
       const handler = new RemoveClientContactNumberCommandHandler(repositoryClientContactNumber);
 
       const error = await handler
@@ -111,8 +111,8 @@ describe('RemoveClientContactNumberCommandHandler', () => {
         ])
       );
 
-      aggregateClientContactNumber.isClientContactNumberIdExists.should.have.calledOnce;
-      aggregateClientContactNumber.isClientContactNumberRemoved.should.have.calledOnce;
+      aggregateClientContactNumber.clientContactNumberIdExists.should.have.calledOnce;
+      aggregateClientContactNumber.clientContactNumberRemoved.should.have.calledOnce;
       repositoryClientContactNumber.save.should.not.have.been.called;
     });
   });

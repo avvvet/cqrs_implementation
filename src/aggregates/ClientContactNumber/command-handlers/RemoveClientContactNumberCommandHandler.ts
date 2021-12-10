@@ -19,7 +19,7 @@ export class RemoveClientContactNumberCommandHandler implements ClientContactNum
     const eventId = aggregateClientContactNumber.getLastEventId();
     const aggregateId = aggregateClientContactNumber.getId();
 
-    if (!aggregateClientContactNumber.isClientContactNumberIdExists(commandData._id)) {
+    if (!aggregateClientContactNumber.clientContactNumberIdExists(commandData._id)) {
       throw new ValidationError('Not allowed. Client Contact number not found', [
         {
           code: 'CONTACT_NUMBER_NOT_FOUND',
@@ -27,7 +27,7 @@ export class RemoveClientContactNumberCommandHandler implements ClientContactNum
           path: ['_id']
         }
       ]);
-    } else if (aggregateClientContactNumber.isClientContactNumberRemoved(commandData._id)) {
+    } else if (aggregateClientContactNumber.clientContactNumberRemoved(commandData._id)) {
       throw new ValidationError('Not allowed. Client Contact number already removed', [
         {
           code: 'CONTACT_NUMBER_ALREADY_REMOVED',

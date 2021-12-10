@@ -42,11 +42,14 @@ describe('ClientContactNumberAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isNotTrue(aggregate.clientContactNumberExists('09111111', 'diffrent-type'), 'Expected client contact number not exists');
+      assert.isNotTrue(
+        aggregate.clientContactNumberExists('09111111', 'diffrent-type'),
+        'Expected client contact number not exists'
+      );
     });
   });
 
-  describe('isClientContactNumberIdExists()', () => {
+  describe('clientContactNumberIdExists()', () => {
     it('Test Client contact number id exists', () => {
       const aggregateId = {
         client_id: 'client-id',
@@ -64,7 +67,7 @@ describe('ClientContactNumberAggregate', function () {
       });
 
       assert.isTrue(
-        aggregate.isClientContactNumberIdExists('61948046abd55b1a8ec55671'),
+        aggregate.clientContactNumberIdExists('61948046abd55b1a8ec55671'),
         'Expected client contact number id exists'
       );
     });
@@ -86,13 +89,13 @@ describe('ClientContactNumberAggregate', function () {
       });
 
       assert.isNotTrue(
-        aggregate.isClientContactNumberIdExists('77748046abd55b1a8ec55777'),
+        aggregate.clientContactNumberIdExists('77748046abd55b1a8ec55777'),
         'Expected client contact number id not found'
       );
     });
   });
 
-  describe('isClientContactNumberRemoved()', () => {
+  describe('clientContactNumberRemoved()', () => {
     it('Test Client contact number not removed', () => {
       const aggregateId = {
         client_id: 'client-id',
@@ -110,7 +113,7 @@ describe('ClientContactNumberAggregate', function () {
       });
 
       assert.isNotTrue(
-        aggregate.isClientContactNumberRemoved('61948046abd55b1a8ec55671'),
+        aggregate.clientContactNumberRemoved('61948046abd55b1a8ec55671'),
         'Expected client contact number not removed'
       );
     });
@@ -133,7 +136,7 @@ describe('ClientContactNumberAggregate', function () {
       });
 
       assert.isTrue(
-        aggregate.isClientContactNumberRemoved('61948046abd55b1a8ec55671'),
+        aggregate.clientContactNumberRemoved('61948046abd55b1a8ec55671'),
         'Expected client contact number removed'
       );
     });
