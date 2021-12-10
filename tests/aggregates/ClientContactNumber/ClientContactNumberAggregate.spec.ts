@@ -20,7 +20,7 @@ describe('ClientContactNumberAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isTrue(aggregate.clientContactNumberExists('091'), 'Expected client contact number exists');
+      assert.isTrue(aggregate.clientContactNumberExists('091', 'some-name'), 'Expected client contact number exists');
     });
 
     it('Test Client contact number not exists', () => {
@@ -39,7 +39,7 @@ describe('ClientContactNumberAggregate', function () {
         last_sequence_id: 0
       });
 
-      assert.isNotTrue(aggregate.clientContactNumberExists('09222222'), 'Expected client contact number not exists');
+      assert.isNotTrue(aggregate.clientContactNumberExists('09111111', 'diffrent-type'), 'Expected client contact number not exists');
     });
   });
 });
