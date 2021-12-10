@@ -1,8 +1,8 @@
 import {WriteProjectionInterface} from '../../WriteProjectionInterface';
 import {ClientContactNumberAggregateRecordInterface, ClientContactNumberInterface} from './types';
-import {AddClientContactNumberCommandDataInterface} from './types/CommandDataTypes';
 import {EventStoreModelInterface} from '../../models/EventStore';
 import {EventsEnum} from '../../Events';
+import {ClientContactNumberAddedEventStoreDataInterface} from 'EventStoreDataTypes';
 
 /**
  * Responsible for handling all client contact number events to build the current state of the aggregate
@@ -16,11 +16,11 @@ implements WriteProjectionInterface<ClientContactNumberAggregateRecordInterface>
   ): ClientContactNumberAggregateRecordInterface {
     switch (type) {
       case EventsEnum.CLIENT_CONTACT_NUMBER_ADDED: {
-        const eventData = event.data as AddClientContactNumberCommandDataInterface;
+        const eventData = event.data as ClientContactNumberAddedEventStoreDataInterface;
         const contactNumber: ClientContactNumberInterface = {
           _id: eventData._id,
           type_id: eventData.type_id,
-          number: eventData.number
+          contact_number: eventData.contact_number
         };
 
         aggregate.contact_numbers

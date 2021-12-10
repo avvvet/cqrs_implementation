@@ -2,7 +2,6 @@ import {BaseEventStoreDataInterface} from 'EventStoreDataTypes/BaseEventStoreDat
 
 export interface ClientContactNumberAddedEventStoreDataInterface extends BaseEventStoreDataInterface {
   _id: string;
-  client_id: string;
   type_id: string;
-  number: string;
+  contact_number: string;
 }
