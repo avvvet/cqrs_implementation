@@ -119,6 +119,11 @@ describe('ContactNumberType', () => {
 
       await removeClientContactNumber(req, res, next);
       assert.equal(next.callCount, 1, 'Expected next to be called');
+      assert.instanceOf(
+        next.getCall(0).args[0],
+        ResourceNotFoundError,
+        'Expected error to be instance of ResourceNotFoundError'
+      );
     });
   });
 });

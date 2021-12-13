@@ -24,17 +24,9 @@ describe('ClientContactNumberCommandBus', () => {
   });
 
   describe('addHandler()', () => {
-    it('should return class instance AddClientContactNumberCommandHandler', () => {
+    it('should return class instance', () => {
       const instance = commandBus.addHandler(
         new AddClientContactNumberCommandHandler(repositoryClientContactNumber, repositoryContactNumberSetting)
-      );
-
-      instance.should.deep.equal(commandBus);
-    });
-
-    it('should return class instance RemoveClientContactNumberCommandHandler', () => {
-      const instance = commandBus.addHandler(
-        new RemoveClientContactNumberCommandHandler(repositoryClientContactNumber)
       );
 
       instance.should.deep.equal(commandBus);
