@@ -47,7 +47,7 @@ export const addClientContactNumber = async (
     res.setHeader('Location', `${req.basePathName}/${clientContactNumberId}`);
     res.end();
   } catch (error) {
-    if (!(error instanceof ResourceNotFoundError)) {
+    if (!(error instanceof ValidationError)) {
       req.Logger.error('Unknown error in add client contact number', error);
     }
     return next(error);
