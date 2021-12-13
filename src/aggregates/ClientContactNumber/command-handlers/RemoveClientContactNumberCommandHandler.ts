@@ -4,7 +4,7 @@ import {ClientContactNumberCommandHandlerInterface} from '../types/ClientContact
 import {RemoveClientContactNumberCommandDataInterface} from '../types/CommandDataTypes';
 import {ClientContactNumberCommandEnum} from '../types';
 import {EventsEnum} from '../../../Events';
-import {ValidationError} from 'a24-node-error-utils';
+import {ResourceNotFoundError} from 'a24-node-error-utils';
 
 /**
  * Class responsible for handling remove client contact number command
@@ -20,21 +20,7 @@ export class RemoveClientContactNumberCommandHandler implements ClientContactNum
     const aggregateId = aggregateClientContactNumber.getId();
 
     if (!aggregateClientContactNumber.clientContactNumberIdExists(commandData._id)) {
-      throw new ValidationError('Not allowed. Client Contact number not found', [
-        {
-          code: 'CONTACT_NUMBER_NOT_FOUND',
-          message: `Client contact number id '${commandData._id}' not found.`,
-          path: ['_id']
-        }
-      ]);
-    } else if (aggregateClientContactNumber.clientContactNumberRemoved(commandData._id)) {
-      throw new ValidationError('Not allowed. Client Contact number already removed', [
-        {
-          code: 'CONTACT_NUMBER_ALREADY_REMOVED',
-          message: `Client contact number id '${commandData._id}' already removed.`,
-          path: ['_id']
-        }
-      ]);
+      throw new ResourceNotFoundError('Not allowed. Client Contact number not found');
     }
 
     await this.clientContactNumberRepository.save([

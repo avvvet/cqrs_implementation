@@ -1,9 +1,5 @@
-import {cloneDeep} from 'lodash';
 import {ClientContactNumberWriteProjectionHandler} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberWriteProjectionHandler';
-import {
-  ClientContactNumberAggregateRecordInterface,
-  ClientContactNumberStatusEnum
-} from '../../../src/aggregates/ClientContactNumber/types';
+import {ClientContactNumberAggregateRecordInterface} from '../../../src/aggregates/ClientContactNumber/types';
 import {EventsEnum} from '../../../src/Events';
 import {EventStore} from '../../../src/models/EventStore';
 import {
@@ -98,10 +94,7 @@ describe('ClientContactNumberWriteProjectionHandler', () => {
 
         const response = handler.execute(EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED, aggregate, event);
 
-        response.contact_numbers.length.should.equal(1);
-        response.contact_numbers[0].status.should.equal(
-          ClientContactNumberStatusEnum.CLIENT_CONTACT_NUMBER_STATUS_REMOVED
-        );
+        response.contact_numbers.should.be.empty;
       });
 
       it('Test when record not found', () => {
@@ -130,8 +123,7 @@ describe('ClientContactNumberWriteProjectionHandler', () => {
 
         const response = handler.execute(EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED, aggregate, event);
 
-        response.contact_numbers.length.should.equal(1);
-        (response.contact_numbers[0].status === undefined).should.be.true;
+        response.contact_numbers.should.deep.equal(aggregate.contact_numbers);
       });
     });
   });

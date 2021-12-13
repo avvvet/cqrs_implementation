@@ -445,35 +445,9 @@ definitions:
         type: string
         enum:
           - REQUIRED
-          - MODEL_VALIDATION_FAILED
-          - SCHEMA_VALIDATION_FAILED
+          - PATTERN
       message:
         type: string
-      errors:
-        type: array
-        items:
-          type: object
-          required:
-            - code
-            - message
-            - path
-          properties:
-            code:
-              type: string
-              enum:
-                - OBJECT_ADDITIONAL_PROPERTIES
-                - OBJECT_MISSING_REQUIRED_PROPERTY
-                - CONTACT_NUMBER_NOT_FOUND
-                - CONTACT_NUMBER_ALREADY_REMOVED
-            message:
-              type: string
-            path:
-              type: array
-              items:
-                type: string
-            description:
-              type: string
-          additionalProperties: false
     additionalProperties: false
   update_contact_number_type_validation_error_model:
     type: object

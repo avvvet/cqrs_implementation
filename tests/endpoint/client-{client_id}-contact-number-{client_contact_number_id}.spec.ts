@@ -32,7 +32,7 @@ describe('/client/{client_id}/contact-number/{client_contact_number_id', () => {
     await clientContactNumberScenario.deleteAllEvents();
   });
 
-  describe('post', () => {
+  describe('delete', () => {
     it('should respond with 202 : Remove Client Contact Number', async () => {
       await contactNumberTypeScenario.createContactNumberType(contactNumberTypeId);
       await clientContactNumberScenario.createClientContactNumber(clientId);
@@ -48,47 +48,15 @@ describe('/client/{client_id}/contact-number/{client_contact_number_id', () => {
         properties: {
           code: {
             type: 'string',
-            enum: ['REQUIRED', 'MODEL_VALIDATION_FAILED', 'SCHEMA_VALIDATION_FAILED']
+            enum: ['REQUIRED', 'PATTERN']
           },
           message: {
             type: 'string'
-          },
-          errors: {
-            type: 'array',
-            items: {
-              type: 'object',
-              required: ['code', 'message', 'path'],
-              properties: {
-                code: {
-                  type: 'string',
-                  enum: [
-                    'PATTERN',
-                    'OBJECT_ADDITIONAL_PROPERTIES',
-                    'OBJECT_MISSING_REQUIRED_PROPERTY',
-                    'CONTACT_NUMBER_NOT_FOUND',
-                    'CONTACT_NUMBER_ALREADY_REMOVED'
-                  ]
-                },
-                message: {
-                  type: 'string'
-                },
-                path: {
-                  type: 'array',
-                  items: {
-                    type: 'string'
-                  }
-                },
-                description: {
-                  type: 'string'
-                }
-              },
-              additionalProperties: false
-            }
           }
         },
         additionalProperties: false
       };
-      const res = await api.delete(`/client/${clientId}/contact-number/${clientContactNumberId}`).set(headers).send({});
+      const res = await api.delete(`/client/${clientId}/contact-number/777`).set(headers).send({});
 
       assert.equal(res.statusCode, 400);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
@@ -118,6 +86,27 @@ describe('/client/{client_id}/contact-number/{client_contact_number_id', () => {
         .send({});
 
       assert.equal(res.statusCode, 401);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+
+    it('should respond with 404', async () => {
+      const schema = {
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['RESOURCE_NOT_FOUND']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
+      };
+      const res = await api.delete(`/client/${clientId}/contact-number/${clientContactNumberId}`).set(headers).send({});
+
+      assert.equal(res.statusCode, 404);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
     });
   });

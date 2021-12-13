@@ -1,6 +1,6 @@
 import {find} from 'lodash';
 import {ClientContactNumberAggregateIdInterface} from '../ClientContactNumber/types';
-import {ClientContactNumberAggregateRecordInterface, ClientContactNumberStatusEnum} from './types';
+import {ClientContactNumberAggregateRecordInterface} from './types';
 
 export class ClientContactNumberAggregate {
   constructor(
@@ -24,15 +24,6 @@ export class ClientContactNumberAggregate {
     const clientContactNumberId = find(this.aggregate.contact_numbers, {_id: contactNumberId});
 
     if (clientContactNumberId) {
-      return true;
-    }
-    return false;
-  }
-
-  clientContactNumberRemoved(contactNumberId: string): boolean {
-    const clientContactNumber = find(this.aggregate.contact_numbers, {_id: contactNumberId});
-
-    if (clientContactNumber.status == ClientContactNumberStatusEnum.CLIENT_CONTACT_NUMBER_STATUS_REMOVED) {
       return true;
     }
     return false;

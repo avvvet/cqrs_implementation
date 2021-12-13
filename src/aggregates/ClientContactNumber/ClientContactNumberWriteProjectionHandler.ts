@@ -1,5 +1,5 @@
 import {WriteProjectionInterface} from '../../WriteProjectionInterface';
-import {map} from 'lodash';
+import {differenceWith} from 'lodash';
 import {ClientContactNumberAggregateRecordInterface, ClientContactNumberInterface} from './types';
 import {EventStoreModelInterface} from '../../models/EventStore';
 import {EventsEnum} from '../../Events';
@@ -7,7 +7,6 @@ import {
   ClientContactNumberAddedEventStoreDataInterface,
   ClientContactNumberRemovedEventStoreDataInterface
 } from 'EventStoreDataTypes';
-import {ClientContactNumberStatusEnum} from './types/ClientContactNumberStatusEnum';
 
 /**
  * Responsible for handling all client contact number events to build the current state of the aggregate
@@ -37,12 +36,12 @@ implements WriteProjectionInterface<ClientContactNumberAggregateRecordInterface>
       case EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED: {
         const eventData = event.data as ClientContactNumberRemovedEventStoreDataInterface;
 
-        aggregate.contact_numbers = map(aggregate.contact_numbers, (clientContactNumber) => {
-          if (clientContactNumber._id === eventData._id) {
-            clientContactNumber.status = ClientContactNumberStatusEnum.CLIENT_CONTACT_NUMBER_STATUS_REMOVED;
-          }
-          return clientContactNumber;
-        });
+        aggregate.contact_numbers = differenceWith(
+          aggregate.contact_numbers,
+          [eventData],
+          (value, other) => value._id == other._id
+        );
+
         return {...aggregate, last_sequence_id: event.sequence_id};
       }
       default:
