@@ -47,7 +47,7 @@ export const addClientContactNumber = async (
     res.setHeader('Location', `${req.basePathName}/${clientContactNumberId}`);
     res.end();
   } catch (error) {
-    if (!(error instanceof ValidationError)) {
+    if (!(error instanceof ResourceNotFoundError)) {
       req.Logger.error('Unknown error in add client contact number', error);
     }
     return next(error);
@@ -91,7 +91,7 @@ export const removeClientContactNumber = async (
     res.statusCode = 202;
     res.end();
   } catch (error) {
-    if (!(error instanceof ValidationError)) {
+    if (!(error instanceof ResourceNotFoundError)) {
       req.Logger.error('Unknown error in remove client contact number', error);
     }
     return next(error);

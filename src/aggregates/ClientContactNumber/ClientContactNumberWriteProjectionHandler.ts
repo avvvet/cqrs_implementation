@@ -36,6 +36,10 @@ implements WriteProjectionInterface<ClientContactNumberAggregateRecordInterface>
       case EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED: {
         const eventData = event.data as ClientContactNumberRemovedEventStoreDataInterface;
 
+        /**
+         *  we are using the differenceWith, to take off the client contact number from the existing
+         *  aggregate contact_numbers list build up.
+         */
         aggregate.contact_numbers = differenceWith(
           aggregate.contact_numbers,
           [eventData],

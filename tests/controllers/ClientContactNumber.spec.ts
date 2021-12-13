@@ -113,7 +113,7 @@ describe('ContactNumberType', () => {
       const res = fakeResponse();
       const next = sinon.spy();
 
-      const error = new ValidationError('sample');
+      const error = new ResourceNotFoundError('sample');
 
       sinon.stub(ClientContactNumberCommandBus.prototype, 'execute').rejects(error);
 

@@ -13,7 +13,7 @@ describe('RemoveClientContactNumberCommandHandler', () => {
     sinon.restore();
   });
   describe('execute()', () => {
-    it('Test success scenario', async () => {
+    it('Test success scenario repositoryClientContactNumber save persistes ', async () => {
       const repositoryClientContactNumber = stubConstructor(ClientContactNumberRepository);
       const aggregateClientContactNumber = stubConstructor(ClientContactNumberAggregate);
 
@@ -52,7 +52,7 @@ describe('RemoveClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.getCall(0).args[0].should.deep.equal(eventData);
     });
 
-    it('Test failure scenario', async () => {
+    it('Test failure scenario : clientContactNumberIdExists', async () => {
       const clientId = 'sample-client-id';
       const command: RemoveClientContactNumberCommandDataInterface = {
         _id: 'id'
@@ -68,7 +68,6 @@ describe('RemoveClientContactNumberCommandHandler', () => {
         .execute(clientId, command)
         .should.have.been.rejectedWith(ResourceNotFoundError, 'Not allowed. Client Contact number not found');
 
-      error.should.deep.equal(new ResourceNotFoundError('Not allowed. Client Contact number not found'));
       aggregateClientContactNumber.clientContactNumberIdExists.should.have.calledOnceWith(command._id);
       repositoryClientContactNumber.save.should.not.have.been.called;
     });
