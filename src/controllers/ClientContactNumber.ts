@@ -1,5 +1,5 @@
 import {ServerResponse} from 'http';
-import {get, isEmpty} from 'lodash';
+import {get} from 'lodash';
 import {SwaggerRequestInterface} from 'SwaggerRequestInterface';
 import {ClientContactNumberCommandEnum, ClientContactNumberInterface} from '../aggregates/ClientContactNumber/types';
 import {
