@@ -1,3 +1,8 @@
-import {AddClientContactNumberCommandDataInterface} from './CommandDataTypes';
+import {
+  AddClientContactNumberCommandDataInterface,
+  RemoveClientContactNumberCommandDataInterface
+} from './CommandDataTypes';
 
-export type ClientContactNumberCommandDataType = AddClientContactNumberCommandDataInterface;
+export type ClientContactNumberCommandDataType =
+  | AddClientContactNumberCommandDataInterface
+  | RemoveClientContactNumberCommandDataInterface;

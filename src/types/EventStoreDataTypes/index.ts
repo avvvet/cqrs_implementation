@@ -4,3 +4,4 @@ export {ContactNumberTypeUpdatedEventStoreDataInterface} from './ContactNumberTy
 export {ClientContactNumberAddedEventStoreDataInterface} from './ClientContactNumberAddedEventStoreDataInterface';
 export {ContactNumberTypeEnabledEventStoreDataInterface} from './ContactNumberTypeEnabledEventStoreDataInterface';
 export {ContactNumberTypeDisabledEventStoreDataInterface} from './ContactNumberTypeDisabledEventStoreDataInterface';
+export {ClientContactNumberRemovedEventStoreDataInterface} from './ClientContactNumberRemovedEventStoreDataInterface';

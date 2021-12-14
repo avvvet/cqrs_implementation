@@ -1,5 +1,8 @@
 import sinon, {stubConstructor} from 'ts-sinon';
-import {AddClientContactNumberCommandHandler} from '../../../src/aggregates/ClientContactNumber/command-handlers/AddClientContactNumberCommandHandler';
+import {
+  AddClientContactNumberCommandHandler,
+  RemoveClientContactNumberCommandHandler
+} from '../../../src/aggregates/ClientContactNumber/command-handlers';
 import {ClientContactNumberCommandBus} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberCommandBus';
 import {ClientContactNumberRepository} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberRepository';
 import {ContactNumberSettingRepository} from '../../../src/aggregates/ContactNumberSetting/ContactNumberSettingRepository';
@@ -31,28 +34,77 @@ describe('ClientContactNumberCommandBus', () => {
   });
 
   describe('execute()', () => {
-    const clientId = 'client-id';
-    const command = {
-      type: ClientContactNumberCommandEnum.ADD_CLIENT_CONTACT_NUMBER,
-      data: {
-        _id: 'id',
-        client_id: 'client-id',
-        type_id: 'name',
-        contact_number: '0911'
-      }
-    };
+    it('should throw an error when there is no handler for the command AddClientContactNumberCommandHandler', async () => {
+      const clientId = 'client-id';
+      const command = {
+        type: ClientContactNumberCommandEnum.ADD_CLIENT_CONTACT_NUMBER,
+        data: {
+          _id: 'id',
+          client_id: 'client-id',
+          type_id: 'name',
+          contact_number: '0911'
+        }
+      };
 
-    it('should throw an error when there is no handler for the command', async () => {
       await commandBus
         .execute(clientId, command)
         .should.be.rejectedWith(Error, `Command type:${command.type} is not supported`);
     });
 
-    it('should use the correct handler', async () => {
+    it('should throw an error when there is no handler for the command RemoveClientContactNumberCommandHandler', async () => {
+      const clientId = 'client-id';
+      const command = {
+        type: ClientContactNumberCommandEnum.REMOVE_CLIENT_CONTACT_NUMBER,
+        data: {
+          _id: 'id',
+          client_id: 'client-id',
+          type_id: 'name',
+          contact_number: '0911'
+        }
+      };
+
+      await commandBus
+        .execute(clientId, command)
+        .should.be.rejectedWith(Error, `Command type:${command.type} is not supported`);
+    });
+
+    it('should use the correct handler AddClientContactNumberCommandHandler', async () => {
+      const clientId = 'client-id';
+      const command = {
+        type: ClientContactNumberCommandEnum.ADD_CLIENT_CONTACT_NUMBER,
+        data: {
+          _id: 'id',
+          client_id: 'client-id',
+          type_id: 'name',
+          contact_number: '0911'
+        }
+      };
       const handler = new AddClientContactNumberCommandHandler(
         repositoryClientContactNumber,
         repositoryContactNumberSetting
       );
+      const executeStub = sinon.stub(handler, 'execute');
+
+      commandBus.addHandler(handler);
+      executeStub.resolves();
+
+      await commandBus.execute(clientId, command);
+      executeStub.should.have.been.calledOnceWith(clientId, command.data);
+    });
+
+    it('should use the correct handler RemoveClientContactNumberCommandHandler', async () => {
+      const clientId = 'client-id';
+      const command = {
+        type: ClientContactNumberCommandEnum.REMOVE_CLIENT_CONTACT_NUMBER,
+        data: {
+          _id: 'id',
+          client_id: 'client-id',
+          type_id: 'name',
+          contact_number: '0911'
+        }
+      };
+
+      const handler = new RemoveClientContactNumberCommandHandler(repositoryClientContactNumber);
       const executeStub = sinon.stub(handler, 'execute');
 
       commandBus.addHandler(handler);

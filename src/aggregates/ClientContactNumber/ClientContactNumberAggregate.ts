@@ -9,9 +9,21 @@ export class ClientContactNumberAggregate {
   ) {}
 
   clientContactNumberExists(contactNumber: string, contactNumberType: string): boolean {
-    const clientContactNumber = find(this.aggregate.contact_numbers, {contact_number: contactNumber, type_id: contactNumberType});
+    const clientContactNumber = find(this.aggregate.contact_numbers, {
+      contact_number: contactNumber,
+      type_id: contactNumberType
+    });
 
     if (clientContactNumber) {
+      return true;
+    }
+    return false;
+  }
+
+  clientContactNumberIdExists(contactNumberId: string): boolean {
+    const clientContactNumberId = find(this.aggregate.contact_numbers, {_id: contactNumberId});
+
+    if (clientContactNumberId) {
       return true;
     }
     return false;
