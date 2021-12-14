@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import {ContactNumberSettingAggregate} from '../../../src/aggregates/ContactNumberSetting/ContactNumberSettingAggregate';
 import {
   ContactNumberSettingAggregateId,
+  ContactNumberTypeInterface,
   ContactNumberTypeStatusEnum
 } from '../../../src/aggregates/ContactNumberSetting/types';
 import {
@@ -328,6 +329,50 @@ describe('ContactNumberSettingAggregate', function () {
       });
 
       assert.isNotTrue(aggregate.contactNumberTypeExists('other-id'), 'Expected to not exists');
+    });
+  });
+
+  describe('getContactNumberType()', () => {
+    it('Test getContactNumberType to return a specific contact number type', async () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: 'some-id',
+            name: 'mobile',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      const contactNumberTypeData = {
+        _id: 'some-id',
+        name: 'mobile',
+        order: 1,
+        status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+      } as ContactNumberTypeInterface;
+      const contactNumberType = await aggregate.getContactNumberType('some-id');
+
+      assert.deepEqual(contactNumberTypeData, contactNumberType, 'Expected to exists');
+    });
+
+    it('Test getContactNumberType not to return contact type', async () => {
+      const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
+        types: [
+          {
+            _id: 'some-id',
+            name: 'mobile',
+            order: 1,
+            status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+          }
+        ],
+        last_sequence_id: 0
+      });
+
+      const contactNumberType = await aggregate.getContactNumberType('other-id');
+
+      assert.isUndefined(contactNumberType, 'Expected to return null');
     });
   });
 });

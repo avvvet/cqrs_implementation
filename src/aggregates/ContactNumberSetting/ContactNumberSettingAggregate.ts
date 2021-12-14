@@ -114,6 +114,16 @@ export class ContactNumberSettingAggregate {
     return false;
   }
 
+  async getContactNumberType(contactNumberTypeId: string): Promise<ContactNumberTypeInterface> {
+    let contactNumberType = null;
+
+    try {
+      contactNumberType = find(this.aggregate.types, {_id: contactNumberTypeId});
+    } catch (error) {}
+
+    return contactNumberType;
+  }
+
   getLastEventId(): number {
     return this.aggregate.last_sequence_id;
   }
