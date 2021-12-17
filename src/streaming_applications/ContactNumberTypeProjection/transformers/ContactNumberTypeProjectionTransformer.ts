@@ -66,15 +66,10 @@ export class ContactNumberTypeProjectionTransformer extends Transform {
     this.logger.debug('Processing the incoming event', {event: data.event.type});
     const event = data.event;
 
-    const criteria: FilterQuery<ContactNumberTypeProjectionDocumentType> = {
-      _id: event._id
-    };
-
     const eventData = event.data as SupportedEventsDataType;
-
-    if (eventData._id) {
-      criteria._id = eventData._id;
-    }
+    const criteria: FilterQuery<ContactNumberTypeProjectionDocumentType> = {
+      _id: eventData._id
+    };
 
     type UpdateType = {status: string} | ContactNumberTypeUpdatedEventStoreDataInterface;
     switch (data.event.type) {
