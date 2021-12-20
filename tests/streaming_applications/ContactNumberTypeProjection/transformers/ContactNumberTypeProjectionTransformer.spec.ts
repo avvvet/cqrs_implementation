@@ -233,7 +233,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
 
         updateOneStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
           assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          assert.deepEqual(update, {$set: {status: 'enabled'}}, 'Expected record does not matched');
+          assert.deepEqual(update, {$inc: {__v: 1}, $set: {status: 'enabled'}}, 'Expected record does not matched');
           assert.deepEqual(options, {}, 'Expected record does not matched');
           callback(null, record, testData);
           return null;
@@ -281,7 +281,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
 
         updateOneStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
           assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          assert.deepEqual(update, {$set: {status: 'enabled'}}, 'Expected record does not matched');
+          assert.deepEqual(update, {$inc: {__v: 1}, $set: {status: 'enabled'}}, 'Expected record does not matched');
           assert.deepEqual(options, {}, 'Expected record does not matched');
           callback(error);
           return null;
@@ -332,7 +332,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
 
         updateOneStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
           assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          assert.deepEqual(update, {$set: {status: 'disabled'}}, 'Expected record does not matched');
+          assert.deepEqual(update, {$inc: {__v: 1}, $set: {status: 'disabled'}}, 'Expected record does not matched');
           assert.deepEqual(options, {}, 'Expected record does not matched');
           callback(null, record, testData);
           return null;
@@ -380,7 +380,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
 
         updateOneStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
           assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          assert.deepEqual(update, {$set: {status: 'disabled'}}, 'Expected record does not matched');
+          assert.deepEqual(update, {$inc: {__v: 1}, $set: {status: 'disabled'}}, 'Expected record does not matched');
           assert.deepEqual(options, {}, 'Expected record does not matched');
           callback(error);
           return null;
@@ -420,6 +420,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
           _id: testData.event.data._id
         });
         const updateObject = {
+          $inc: {__v: 1},
           $set: testData.event.data
         };
         const options = {
@@ -470,6 +471,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
           }
         };
         const updateObject = {
+          $inc: {__v: 1},
           $set: testData.event.data
         };
         const options = {
