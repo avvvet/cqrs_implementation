@@ -157,7 +157,7 @@ export class ContactNumberTypeProjectionTransformer extends Transform {
     data: EventStoreChangeStreamFullDocumentInterface,
     callback: TransformCallback
   ): void {
-    model.updateOne(query, {$set: updateObject}, {}, (err: CallbackError) => {
+    model.updateOne(query, {$inc: {__v: 1}, $set: updateObject}, {}, (err: CallbackError) => {
       if (err) {
         logger.error('Error updating a record to the contact number type projection', {
           originalError: err,
