@@ -1,6 +1,6 @@
-import {MongoClientOptions} from 'mongodb';
+import {ConnectOptions} from 'mongoose';
 
 export interface MongoConfigurationInterface {
   database_host: string;
-  options: MongoClientOptions;
+  options: ConnectOptions;
 }

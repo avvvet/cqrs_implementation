@@ -202,6 +202,8 @@ paths:
           description: "Validation error."
           schema:
             $ref: "#/definitions/remove_client_contact_number_validation_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
         401:
           $ref: "#/responses/unauthorize_error_model"
         default:
