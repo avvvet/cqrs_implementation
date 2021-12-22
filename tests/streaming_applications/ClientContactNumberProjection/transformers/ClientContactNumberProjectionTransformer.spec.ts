@@ -97,10 +97,12 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const outputStream = new PassThrough(options);
 
         const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
+        const getContactNumberTypeStub = sinon.stub(
+          ClientContactNumberProjectionTransformer.prototype,
+          <any>'getContactNumberType'
+        );
 
-        saveStub.callsFake((callback) => {
-          callback();
-        });
+        getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
         outputStream.on('data', (data) => {
@@ -141,8 +143,13 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const outputStream = new PassThrough(options);
 
         const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
+        const getContactNumberTypeStub = sinon.stub(
+          ClientContactNumberProjectionTransformer.prototype,
+          <any>'getContactNumberType'
+        );
 
-        saveStub.callsFake((callback) => {
+        getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
+        saveStub.callsFake((callback: any) => {
           callback({code: MONGO_ERROR_CODES.DUPLICATE_KEY});
         });
 
@@ -192,7 +199,9 @@ describe('ClientContactNumberProjectionTransformer', () => {
         );
 
         getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
-        saveStub.callsFake((callback) => callback(error));
+        saveStub.callsFake(() => {
+          throw error;
+        });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
         clientContactNumberProjectionTransformer.on('error', (err: Error) => {
@@ -337,11 +346,9 @@ describe('ClientContactNumberProjectionTransformer', () => {
 
         const updateManyStub = sinon.stub(ClientContactNumberProjection, 'updateMany');
 
-        updateManyStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
+        updateManyStub.callsFake((filter: any, update: any, callback: any): any => {
           assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected filter does not matched');
           assert.deepEqual(update, updateObject, 'Expected update does not matched');
-          assert.deepEqual(options, {}, 'Expected options does not matched');
-          callback(null, record, testData);
           return null;
         });
 
@@ -392,9 +399,7 @@ describe('ClientContactNumberProjectionTransformer', () => {
         updateManyStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
           assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected filter does not matched');
           assert.deepEqual(update, updateObject, 'Expected update does not matched');
-          assert.deepEqual(options, {}, 'Expected options does not matched');
-          callback(error);
-          return null;
+          throw error;
         });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
