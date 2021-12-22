@@ -181,6 +181,8 @@ export class ClientContactNumberProjectionTransformer extends Transform {
         });
         return callback(err);
       }
+
+      return callback(null, data);
     });
   }
 
