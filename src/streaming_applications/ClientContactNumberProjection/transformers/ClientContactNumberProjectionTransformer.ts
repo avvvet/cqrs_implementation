@@ -126,13 +126,17 @@ export class ClientContactNumberProjectionTransformer extends Transform {
     });
   }
 
+  /**
+   * gets an existing contact number type
+   *
+   * @param contactNumberTypeId - contact number type id
+   */
   private async getContactNumberType(contactNumberTypeId: string) {
     const writeProjectionHandler = new ContactNumberSettingWriteProjectionHandler();
     const repository = new ContactNumberSettingRepository(this.eventRepository, writeProjectionHandler);
     const aggregate = await repository.getAggregate();
-    const contactNumberType = await aggregate.getContactNumberType(contactNumberTypeId);
 
-    return contactNumberType;
+    return await aggregate.getContactNumberType(contactNumberTypeId);
   }
 
   /**
@@ -144,13 +148,13 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    * @param contactNumberType - Associated contact number type
    * @param callback - the callback
    */
-  private async addRecord(
+  private addRecord(
     logger: LoggerContext,
     model: Model<ClientContactNumberProjectionDocumentType>,
     data: EventStoreChangeStreamFullDocumentInterface,
     contactNumberType: ContactNumberTypeInterface,
     callback: TransformCallback
-  ): Promise<void> {
+  ): void {
     const eventData = data.event.data as ClientContactNumberAddedEventStoreDataInterface;
     const clientContactNumberProjection = new model({
       _id: eventData._id,
@@ -186,7 +190,7 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    * @param logger - logger
    * @param model - The projection model
    * @param query - query to find record
-   * @param data - Data object the transformer received
+   * @param updateObject - Data object the transformer received
    * @param callback - the callback
    */
   private updateRecord(
@@ -204,7 +208,7 @@ export class ClientContactNumberProjectionTransformer extends Transform {
     if (updateObject.order != null) {
       updateData.type_order = updateObject.order;
     }
-    model.updateMany({type_id: updateObject._id}, {$inc: {__v: 1}, $set: updateData}, {}, (err: CallbackError) => {
+    model.updateMany({type_id: updateObject._id}, {$inc: {__v: 1}, $set: updateData}, (err: CallbackError) => {
       if (err) {
         logger.error('Error updating a record to the client contact number projection', {
           originalError: err,

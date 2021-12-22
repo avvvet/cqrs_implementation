@@ -191,7 +191,7 @@ describe('ClientContactNumberProjectionTransformer', () => {
           <any>'getContactNumberType'
         );
 
-        getContactNumberTypeStub.returns({type_id: '60126eb559f35a4f3c34ff77', order: 1});
+        getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
         saveStub.callsFake((callback) => callback(error));
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
@@ -338,9 +338,9 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const updateManyStub = sinon.stub(ClientContactNumberProjection, 'updateMany');
 
         updateManyStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
-          assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          assert.deepEqual(update, updateObject, 'Expected record does not matched');
-          assert.deepEqual(options, {}, 'Expected record does not matched');
+          assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected filter does not matched');
+          assert.deepEqual(update, updateObject, 'Expected update does not matched');
+          assert.deepEqual(options, {}, 'Expected options does not matched');
           callback(null, record, testData);
           return null;
         });
@@ -390,9 +390,9 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const updateManyStub = sinon.stub(ClientContactNumberProjection, 'updateMany');
 
         updateManyStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
-          assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          assert.deepEqual(update, updateObject, 'Expected record does not matched');
-          assert.deepEqual(options, {}, 'Expected record does not matched');
+          assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected filter does not matched');
+          assert.deepEqual(update, updateObject, 'Expected update does not matched');
+          assert.deepEqual(options, {}, 'Expected options does not matched');
           callback(error);
           return null;
         });
