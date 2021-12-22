@@ -4,9 +4,9 @@ export type ClientContactNumberProjectionDocumentType = Document & {
   _id: string;
   client_id: string;
   type_id: string;
-  type_name?: string;
-  type_order?: number;
-  contact_number: number;
+  type_name: string;
+  type_order: number;
+  contact_number: string;
   last_sequence_id: number;
 };
 
@@ -24,14 +24,16 @@ const clientContactNumber = new Schema<ClientContactNumberProjectionDocumentType
     },
     type_name: {
       type: String,
+      required: true,
       description: 'Contact number type name'
     },
     type_order: {
       type: Number,
+      required: true,
       description: 'Contact number type order'
     },
     contact_number: {
-      type: Number,
+      type: String,
       required: true,
       description: 'Client Contact number'
     }
