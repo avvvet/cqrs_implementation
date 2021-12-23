@@ -6,6 +6,7 @@ import {EventsEnum} from '../../../Events';
 import {ClientContactNumberProjectionDocumentType} from '../../../models/ClientContactNumberProjection';
 import {EventStoreChangeStreamFullDocumentInterface} from '../../../types/EventStoreChangeStreamFullDocumentInterface';
 import {MONGO_ERROR_CODES} from 'staffshift-node-enums';
+import {isUndefined} from 'lodash';
 import {MongoError} from 'mongodb';
 import {
   ClientContactNumberAddedEventStoreDataInterface,
@@ -57,11 +58,11 @@ export class ClientContactNumberProjectionTransformer extends Transform {
     this.logger = opts.logger;
   }
 
-  async _transform(
+  _transform(
     data: EventStoreChangeStreamFullDocumentInterface,
     encoding: BufferEncoding,
     callback: TransformCallback
-  ): Promise<void> {
+  ): void {
     if (!events.includes(data.event.type)) {
       this.logger.debug('Incoming event ignored', {event: data.event.type});
 
@@ -78,19 +79,23 @@ export class ClientContactNumberProjectionTransformer extends Transform {
     switch (data.event.type) {
       case EventsEnum.CLIENT_CONTACT_NUMBER_ADDED:
         const eventData = data.event.data as ClientContactNumberAddedEventStoreDataInterface;
-        const contactNumberType = await this.getContactNumberType(eventData.type_id);
 
-        this.addRecord(this.logger, this.model, data, contactNumberType, callback);
+        this.getContactNumberType(eventData.type_id)
+          .then((contactNumberType) => {
+            this.addRecord(this.model, data, contactNumberType, callback);
+          })
+          .catch((err) => callback(err));
+
         break;
       case EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED:
-        this.removeRecord(this.logger, this.model, criteria, data, callback);
+        this.removeRecord(this.model, criteria, data, callback);
         break;
       case EventsEnum.CONTACT_NUMBER_TYPE_UPDATED:
         this.updateRecord(
-          this.logger,
           this.model,
           criteria,
           event.data as ContactNumberTypeUpdatedEventStoreDataInterface,
+          data,
           callback
         );
         break;
@@ -102,27 +107,27 @@ export class ClientContactNumberProjectionTransformer extends Transform {
   /**
    * Removes an existing record in the projection collection
    *
-   * @param logger - logger
    * @param model - The projection model
    * @param query - query to find record
    * @param data - Data object the transformer received
    * @param callback - the callback
    */
   private removeRecord(
-    logger: LoggerContext,
     model: Model<ClientContactNumberProjectionDocumentType>,
     query: FilterQuery<ClientContactNumberProjectionDocumentType>,
     data: EventStoreChangeStreamFullDocumentInterface,
     callback: TransformCallback
   ): void {
-    model.deleteOne(query, (err: CallbackError) => {
+    model.remove(query, (err: CallbackError) => {
       if (err) {
-        logger.error('Error removing a record from client contact number projection', {
+        this.logger.error('Error removing a record from client contact number projection', {
           originalError: err,
           query
         });
         return callback(err);
       }
+
+      return callback(null, data);
     });
   }
 
@@ -149,7 +154,6 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    * @param callback - the callback
    */
   private addRecord(
-    logger: LoggerContext,
     model: Model<ClientContactNumberProjectionDocumentType>,
     data: EventStoreChangeStreamFullDocumentInterface,
     contactNumberType: ContactNumberTypeInterface,
@@ -175,7 +179,7 @@ export class ClientContactNumberProjectionTransformer extends Transform {
           return callback(null, data);
         }
 
-        logger.error('Error saving a record to the client contact number projection', {
+        this.logger.error('Error saving a record to the client contact number projection', {
           model: clientContactNumberProjection.toObject(),
           originalError: err
         });
@@ -189,36 +193,38 @@ export class ClientContactNumberProjectionTransformer extends Transform {
   /**
    * Updates an existing record in the projection collection
    *
-   * @param logger - logger
    * @param model - The projection model
    * @param query - query to find record
    * @param updateObject - Data object the transformer received
    * @param callback - the callback
    */
   private updateRecord(
-    logger: LoggerContext,
     model: Model<ClientContactNumberProjectionDocumentType>,
     query: FilterQuery<ClientContactNumberProjectionDocumentType>,
     updateObject: ContactNumberTypeUpdatedEventStoreDataInterface,
+    data: EventStoreChangeStreamFullDocumentInterface,
     callback: TransformCallback
   ): void {
     const updateData: UpdateDataInterface = {};
 
-    if (updateObject.name != null) {
+    if (!isUndefined(updateObject.name)) {
       updateData.type_name = updateObject.name;
     }
-    if (updateObject.order != null) {
+    if (!isUndefined(updateObject.order)) {
       updateData.type_order = updateObject.order;
     }
+
     model.updateMany({type_id: updateObject._id}, {$inc: {__v: 1}, $set: updateData}, (err: CallbackError) => {
       if (err) {
-        logger.error('Error updating a record to the client contact number projection', {
+        this.logger.error('Error updating a record to the client contact number projection', {
           originalError: err,
           query,
           updateObject
         });
         return callback(err);
       }
+
+      return callback(null, data);
     });
   }
 }

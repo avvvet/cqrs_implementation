@@ -102,6 +102,10 @@ describe('ClientContactNumberProjectionTransformer', () => {
           <any>'getContactNumberType'
         );
 
+        saveStub.callsFake((callback: any) => {
+          callback();
+        });
+
         getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
@@ -247,7 +251,7 @@ describe('ClientContactNumberProjectionTransformer', () => {
 
         deleteOneStub.callsFake((callback: any): any => {
           assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          return null;
+          callback();
         });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
@@ -292,11 +296,11 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const outputStream = new PassThrough(options);
 
         const error = new Error('my error');
-        const deleteOneStub = sinon.stub(ClientContactNumberProjection, 'deleteOne');
+        const deleteOneStub = sinon.stub(ClientContactNumberProjection, 'remove');
 
-        deleteOneStub.callsFake(() => {
-          assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
-          throw error;
+        deleteOneStub.callsFake((query: any, callback: any): any => {
+          assert.deepEqual(query, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
+          callback(error);
         });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
@@ -349,7 +353,7 @@ describe('ClientContactNumberProjectionTransformer', () => {
         updateManyStub.callsFake((filter: any, update: any, callback: any): any => {
           assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected filter does not matched');
           assert.deepEqual(update, updateObject, 'Expected update does not matched');
-          return null;
+          callback();
         });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
@@ -396,10 +400,10 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const error = new Error('my error');
         const updateManyStub = sinon.stub(ClientContactNumberProjection, 'updateMany');
 
-        updateManyStub.callsFake((filter: any, update: any, options: any, callback: any): any => {
+        updateManyStub.callsFake((filter: any, update: any, callback: any): any => {
           assert.deepEqual(filter, {type_id: '60126eb559f35a4f3c34ff06'}, 'Expected filter does not matched');
           assert.deepEqual(update, updateObject, 'Expected update does not matched');
-          throw error;
+          callback(error);
         });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
