@@ -34,6 +34,6 @@ export const events: EventsType = {
   },
   [EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED]: {
     name: 'ClientContactNumberRemoved',
-    description: 'The Client Contact Number has been removed test'
+    description: 'The Client Contact Number has been removed'
   }
 };
