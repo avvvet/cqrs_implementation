@@ -12,6 +12,7 @@ import {MongoConfigurationInterface} from 'MongoConfigurationInterface';
 import {GracefulShutdownConfigurationInterface} from 'GracefulShutdownConfigurationInterface';
 
 const StreamTracker = 'StreamTracker';
+const mongoConfig = cloneDeep(config.get<MongoConfigurationInterface>('mongo'));
 
 mongoose.Promise = global.Promise;
 const mongoConfig = cloneDeep(config.get<MongoConfigurationInterface>('mongo'));
