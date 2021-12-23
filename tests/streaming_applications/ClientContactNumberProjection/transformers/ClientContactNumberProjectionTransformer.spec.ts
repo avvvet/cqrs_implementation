@@ -227,7 +227,7 @@ describe('ClientContactNumberProjectionTransformer', () => {
             type: EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED,
             aggregate_id: {
               client_id: 'client-id',
-              name: 'client_contant_number'
+              name: 'client_contact_number'
             },
             data: {
               _id: '60126eb559f35a4f3c34ff06',
@@ -247,9 +247,9 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const inputStream = new PassThrough(options);
         const outputStream = new PassThrough(options);
 
-        const deleteOneStub = sinon.stub(ClientContactNumberProjection, 'deleteOne');
+        const findOneAndDeleteStub = sinon.stub(ClientContactNumberProjection, 'findOneAndDelete');
 
-        deleteOneStub.callsFake((callback: any): any => {
+        findOneAndDeleteStub.callsFake((query: any, callback: any): any => {
           assert.deepEqual(filter, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
           callback();
         });
@@ -275,7 +275,7 @@ describe('ClientContactNumberProjectionTransformer', () => {
             type: EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED,
             aggregate_id: {
               client_id: 'client-id',
-              name: 'client_contant_number'
+              name: 'client_contact_number'
             },
             data: {
               _id: '60126eb559f35a4f3c34ff06',
@@ -283,9 +283,6 @@ describe('ClientContactNumberProjectionTransformer', () => {
               contact_number: '091100000000'
             }
           }
-        };
-        const filter = {
-          _id: '60126eb559f35a4f3c34ff06'
         };
         const options = {
           objectMode: true,
@@ -296,9 +293,9 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const outputStream = new PassThrough(options);
 
         const error = new Error('my error');
-        const deleteOneStub = sinon.stub(ClientContactNumberProjection, 'remove');
+        const findOneAndDeleteStub = sinon.stub(ClientContactNumberProjection, 'findOneAndDelete');
 
-        deleteOneStub.callsFake((query: any, callback: any): any => {
+        findOneAndDeleteStub.callsFake((query: any, callback: any): any => {
           assert.deepEqual(query, {_id: '60126eb559f35a4f3c34ff06'}, 'Expected query does not matched');
           callback(error);
         });

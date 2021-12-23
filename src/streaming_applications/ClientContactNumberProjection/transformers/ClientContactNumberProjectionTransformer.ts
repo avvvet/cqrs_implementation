@@ -118,7 +118,7 @@ export class ClientContactNumberProjectionTransformer extends Transform {
     data: EventStoreChangeStreamFullDocumentInterface,
     callback: TransformCallback
   ): void {
-    model.remove(query, (err: CallbackError) => {
+    model.findOneAndDelete(query, (err: CallbackError) => {
       if (err) {
         this.logger.error('Error removing a record from client contact number projection', {
           originalError: err,
@@ -147,7 +147,6 @@ export class ClientContactNumberProjectionTransformer extends Transform {
   /**
    * Adds a new record to the projection collection
    *
-   * @param logger - logger
    * @param model - The projection model
    * @param data - Data object the transformer received
    * @param contactNumberType - Associated contact number type
@@ -195,7 +194,8 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    *
    * @param model - The projection model
    * @param query - query to find record
-   * @param updateObject - Data object the transformer received
+   * @param updateObject - Update to be applied to the document
+   * @param data - Data object the transformer received
    * @param callback - the callback
    */
   private updateRecord(
