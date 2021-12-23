@@ -203,8 +203,8 @@ describe('ClientContactNumberProjectionTransformer', () => {
         );
 
         getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
-        saveStub.callsFake(() => {
-          throw error;
+        saveStub.callsFake((callback: any) => {
+          callback(error);
         });
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);

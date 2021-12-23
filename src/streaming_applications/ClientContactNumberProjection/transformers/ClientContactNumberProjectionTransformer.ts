@@ -44,9 +44,9 @@ interface ProjectionTransformerOptionsInterface extends TransformOptions {
  */
 export class ClientContactNumberProjectionTransformer extends Transform {
   private readonly eventRepository: EventRepository;
-  private model: Model<ClientContactNumberProjectionDocumentType>;
-  private pipeline: string;
-  private logger: LoggerContext;
+  private readonly model: Model<ClientContactNumberProjectionDocumentType>;
+  private readonly pipeline: string;
+  private readonly logger: LoggerContext;
 
   constructor(opts: ProjectionTransformerOptionsInterface) {
     // We only cater for object mode
@@ -82,22 +82,16 @@ export class ClientContactNumberProjectionTransformer extends Transform {
 
         this.getContactNumberType(eventData.type_id)
           .then((contactNumberType) => {
-            this.addRecord(this.model, data, contactNumberType, callback);
+            this.addRecord(data, contactNumberType, callback);
           })
           .catch((err) => callback(err));
 
         break;
       case EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED:
-        this.removeRecord(this.model, criteria, data, callback);
+        this.removeRecord(criteria, data, callback);
         break;
       case EventsEnum.CONTACT_NUMBER_TYPE_UPDATED:
-        this.updateRecord(
-          this.model,
-          criteria,
-          event.data as ContactNumberTypeUpdatedEventStoreDataInterface,
-          data,
-          callback
-        );
+        this.updateRecord(criteria, event.data as ContactNumberTypeUpdatedEventStoreDataInterface, data, callback);
         break;
       default:
         return callback(new Error(`Unsupported event ${data.event.type} in ClientContactNumberTransformer`));
@@ -113,12 +107,11 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    * @param callback - the callback
    */
   private removeRecord(
-    model: Model<ClientContactNumberProjectionDocumentType>,
     query: FilterQuery<ClientContactNumberProjectionDocumentType>,
     data: EventStoreChangeStreamFullDocumentInterface,
     callback: TransformCallback
   ): void {
-    model.findOneAndDelete(query, (err: CallbackError) => {
+    this.model.findOneAndDelete(query, (err: CallbackError) => {
       if (err) {
         this.logger.error('Error removing a record from client contact number projection', {
           originalError: err,
@@ -153,13 +146,12 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    * @param callback - the callback
    */
   private addRecord(
-    model: Model<ClientContactNumberProjectionDocumentType>,
     data: EventStoreChangeStreamFullDocumentInterface,
     contactNumberType: ContactNumberTypeInterface,
     callback: TransformCallback
   ): void {
     const eventData = data.event.data as ClientContactNumberAddedEventStoreDataInterface;
-    const clientContactNumberProjection = new model({
+    const clientContactNumberProjection = new this.model({
       _id: eventData._id,
       type_id: eventData.type_id,
       type_name: contactNumberType.name,
@@ -199,7 +191,6 @@ export class ClientContactNumberProjectionTransformer extends Transform {
    * @param callback - the callback
    */
   private updateRecord(
-    model: Model<ClientContactNumberProjectionDocumentType>,
     query: FilterQuery<ClientContactNumberProjectionDocumentType>,
     updateObject: ContactNumberTypeUpdatedEventStoreDataInterface,
     data: EventStoreChangeStreamFullDocumentInterface,
@@ -214,9 +205,9 @@ export class ClientContactNumberProjectionTransformer extends Transform {
       updateData.type_order = updateObject.order;
     }
 
-    model.updateMany({type_id: updateObject._id}, {$inc: {__v: 1}, $set: updateData}, (err: CallbackError) => {
+    this.model.updateMany({type_id: updateObject._id}, {$inc: {__v: 1}, $set: updateData}, (err: CallbackError) => {
       if (err) {
-        this.logger.error('Error updating a record to the client contact number projection', {
+        this.logger.error('Error updating records to the client contact number projection', {
           originalError: err,
           query,
           updateObject
