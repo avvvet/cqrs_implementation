@@ -101,7 +101,6 @@ export class ClientContactNumberProjectionTransformer extends Transform {
   /**
    * Removes an existing record in the projection collection
    *
-   * @param model - The projection model
    * @param query - query to find record
    * @param data - Data object the transformer received
    * @param callback - the callback
@@ -140,7 +139,6 @@ export class ClientContactNumberProjectionTransformer extends Transform {
   /**
    * Adds a new record to the projection collection
    *
-   * @param model - The projection model
    * @param data - Data object the transformer received
    * @param contactNumberType - Associated contact number type
    * @param callback - the callback
@@ -184,7 +182,6 @@ export class ClientContactNumberProjectionTransformer extends Transform {
   /**
    * Updates an existing record in the projection collection
    *
-   * @param model - The projection model
    * @param query - query to find record
    * @param updateObject - Update to be applied to the document
    * @param data - Data object the transformer received
