@@ -68,6 +68,41 @@ paths:
       summary: "Add contact number type"
       tags:
         - "Contact Number Type"
+    get:
+      x-swagger-router-controller: "ContactNumberType"
+      operationId: "listContactNumberType"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/page_filter"
+        - $ref: "#/parameters/items_per_page_filter"
+        - $ref: "#/parameters/query_contact_number_type_status"
+        - $ref: "#/parameters/list_contact_number_type_sorting"
+      responses:
+        200:
+          description: "List Contact Number Types"
+          headers:
+            link:
+              type: string
+            x-result-count:
+              type: integer
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/contact_number_type_item_def"
+        204:
+          $ref: "#/responses/no_content"
+        400:
+          description: "Validation Error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/get_contact_number_type_list_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "List Contact Number Types"
+      tags:
+        - "Contact Number Type"
   /contact-number-type/{contact_number_type_id}:
     parameters:
       - $ref: "#/parameters/x_request_id"
@@ -94,6 +129,29 @@ paths:
         default:
           $ref: "#/responses/server_error_model"
       summary: "Update contact number type"
+      tags:
+        - "Contact Number Type"
+    get:
+      x-swagger-router-controller: "ContactNumberType"
+      operationId: "getContactNumberType"
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: "Retrieves a single Contact Number Type"
+          schema:
+            $ref: "#/definitions/contact_number_type_item_def"
+        400:
+          description: "Validation Error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/get_contact_number_type_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Retrieves a single Contact Number type"
       tags:
         - "Contact Number Type"
   /contact-number-type/{contact_number_type_id}/enable:
@@ -212,6 +270,27 @@ paths:
       tags:
         - "Client Contact Number"
 parameters:
+  # Query PARAMS
+  query_contact_number_type_status:
+    name: status
+    in: query
+    description: "The contact number type status that should be filtered on"
+    type: string
+    enum:
+      - enabled
+      - disabled
+  list_contact_number_type_sorting:
+    name: sortBy
+    in: query
+    type: array
+    default: ["order"]
+    items:
+      type: "string"
+      enum:
+        - "name"
+        - "-name"
+        - "order"
+        - "-order"
   # Route parameters
   empty_payload:
     name: empty_payload
@@ -302,6 +381,22 @@ parameters:
         - type_id
         - contact_number
       additionalProperties: false
+  page_filter:
+    name: page
+    in: query
+    description: "The page number to be displayed"
+    required: false
+    type: integer
+    default: 1
+    minimum: 1
+  items_per_page_filter:
+    name: "items_per_page"
+    in: "query"
+    description: "The items per page to be displayed"
+    required: false
+    type: integer
+    default: 25
+    minimum: 1
 definitions:
   unauthorize_error_model:
     type: "object"
@@ -493,6 +588,40 @@ definitions:
               type: string
           additionalProperties: false
     additionalProperties: false
+  contact_number_type_item_def:
+    type: object
+    required:
+      - _id
+      - name
+      - order
+      - status
+      - updated_at
+      - created_at
+      - __v
+    properties:
+      _id:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+      name:
+        type: string
+        minLength: 2
+        maxLength: 100
+      order:
+        type: integer
+      status:
+        type: string
+        enum:
+          - enabled
+          - disabled
+      updated_at:
+        type: string
+        format: date-time
+      created_at:
+        type: string
+        format: date-time
+      __v:
+        type: integer
+    additionalProperties: false 
   empty_payload_error_model:
     type: object
     required:
@@ -530,6 +659,36 @@ definitions:
               type: "string"
           additionalProperties: false
     additionalProperties: false
+  get_contact_number_type_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - PATTERN
+          - REQUIRED
+      message:
+        type: string
+    additionalProperties: false
+  get_contact_number_type_list_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - PATTERN
+          - ENUM_MISMATCH
+          - INVALID_TYPE
+          - REQUIRED
+      message:
+        type: string
+    additionalProperties: false
 responses:
   unauthorize_error_model:
     description: "Failed to authenticate the incoming request"
@@ -539,6 +698,8 @@ responses:
     description: "Server error occurred"
     schema:
       $ref: "#/definitions/server_error_def"
+  no_content:
+    description: "No Content. There were no records to return based on your query."
   resource_not_found:
     description: "Resource not found"
     schema:

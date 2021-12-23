@@ -5,6 +5,7 @@ import {api} from '../tools/TestUtilsApi';
 import {getJWT} from '../tools/TestUtilsJwt';
 import _ from 'lodash';
 import {ContactNumberTypeScenario} from './scenarios/ContactNumberTypeScenario';
+import {ContactNumberTypeProjectionScenarios} from './scenarios/ContactNumberTypeProjectionScenarios';
 
 TestUtilsZSchemaFormatter.format();
 const validator = new ZSchema({});
@@ -21,6 +22,7 @@ describe('/contact-number-type', () => {
     'Content-Type': 'application/json',
     'X-Request-Id': '123'
   };
+  const contactNumberTypeId = '6193a668de89ae5ab5000001';
 
   beforeEach(async () => {
     const scenario = new ContactNumberTypeScenario();
@@ -119,6 +121,112 @@ describe('/contact-number-type', () => {
       const res = await api.post('/contact-number-type').set(otherHeaders).send({
         name: 'sample'
       });
+
+      assert.equal(res.statusCode, 401);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+  });
+
+  describe('get', () => {
+    beforeEach(async () => {
+      await ContactNumberTypeProjectionScenarios.removeAll();
+    });
+    it('should respond with 200 List Contact Number Types', async () => {
+      const schema = {
+        type: 'array',
+        required: ['_id', 'name', 'order', 'status', 'updated_at', 'created_at', '__v'],
+        properties: {
+          _id: {
+            type: 'string',
+            pattern: '^[0-9a-fA-F]{24}$'
+          },
+          name: {
+            type: 'string'
+          },
+          order: {
+            type: 'integer'
+          },
+          status: {
+            type: 'string',
+            enum: ['enabled', 'disabled']
+          },
+          updated_at: {
+            type: 'string',
+            format: 'date-time'
+          },
+          created_at: {
+            type: 'string',
+            format: 'date-time'
+          },
+          __v: {
+            type: 'integer'
+          }
+        },
+        additionalProperties: false
+      };
+
+      await ContactNumberTypeProjectionScenarios.create({
+        _id: contactNumberTypeId
+      });
+      const res = await api.get('/contact-number-type').set(headers).send();
+
+      assert.equal(res.statusCode, 200);
+      assert.equal(res.headers['x-result-count'], '1');
+      assert.isString(res.headers.link);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+      res.headers['content-type'].should.equal('application/json');
+    });
+
+    it('should respond with 204 List Contact Number Types', async () => {
+      const res = await api.get('/contact-number-type').set(headers).send();
+
+      assert.equal(res.statusCode, 204);
+      assert.isUndefined(res.headers['x-result-count']);
+      assert.isUndefined(res.headers.link);
+      assert.isEmpty(res.body);
+      assert.isUndefined(res.headers['Content-Type']);
+    });
+
+    it('should response with 400 validation error', async () => {
+      const schema = {
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['PATTERN', 'ENUM_MISMATCH', 'INVALID_TYPE', 'REQUIRED']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
+      };
+      const res = await api.get('/contact-number-type?status=invalid').set(headers).send();
+
+      assert.equal(res.statusCode, 400);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+
+    it('should response with 401 authorization failure', async () => {
+      const schema = {
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['UNAUTHORIZED']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
+      };
+      const otherHeaders = _.cloneDeep(headers);
+
+      otherHeaders['x-request-jwt'] = 'invalid';
+      const res = await api.get('/contact-number-type').set(otherHeaders).send();
 
       assert.equal(res.statusCode, 401);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
