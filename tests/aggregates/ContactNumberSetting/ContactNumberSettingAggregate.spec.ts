@@ -333,7 +333,14 @@ describe('ContactNumberSettingAggregate', function () {
   });
 
   describe('getContactNumberType()', () => {
-    it('Test getContactNumberType to return a specific contact number type', async () => {
+    it('Test getContactNumberType success scenario to return a contact number type', async () => {
+      const contactNumberType = {
+        _id: 'some-id',
+        name: 'mobile',
+        order: 1,
+        status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
+      } as ContactNumberTypeInterface;
+
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {
@@ -345,19 +352,12 @@ describe('ContactNumberSettingAggregate', function () {
         ],
         last_sequence_id: 0
       });
+      const result = await aggregate.getContactNumberType('some-id');
 
-      const contactNumberTypeData = {
-        _id: 'some-id',
-        name: 'mobile',
-        order: 1,
-        status: ContactNumberTypeStatusEnum.CONTACT_NUMBER_TYPE_STATUS_ENABLED
-      } as ContactNumberTypeInterface;
-      const contactNumberType = await aggregate.getContactNumberType('some-id');
-
-      assert.deepEqual(contactNumberTypeData, contactNumberType, 'Expected to exists');
+      assert.deepEqual(contactNumberType, result, 'Expected to exists');
     });
 
-    it('Test getContactNumberType not to return contact type', async () => {
+    it('Test getContactNumberType failure when return is undefined', async () => {
       const aggregate = new ContactNumberSettingAggregate(ContactNumberSettingAggregateId, {
         types: [
           {
@@ -372,7 +372,7 @@ describe('ContactNumberSettingAggregate', function () {
 
       const contactNumberType = await aggregate.getContactNumberType('other-id');
 
-      assert.isUndefined(contactNumberType, 'Expected to return null');
+      assert.isUndefined(contactNumberType, 'Expected to return undefined');
     });
   });
 });

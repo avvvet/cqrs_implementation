@@ -10,6 +10,8 @@ import {ClientContactNumberProjectionTransformer} from '../../../../src/streamin
 import {Model} from 'mongoose';
 import {EventsEnum} from '../../../../src/Events';
 import {MONGO_ERROR_CODES} from 'staffshift-node-enums';
+import {ContactNumberSettingRepository} from '../../../../src/aggregates/ContactNumberSetting/ContactNumberSettingRepository';
+import {ContactNumberSettingAggregate} from '../../../../src/aggregates/ContactNumberSetting/ContactNumberSettingAggregate';
 
 interface ProjectionTransformerOptionsInterface extends TransformOptions {
   eventRepository: EventRepository;
@@ -97,16 +99,18 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const outputStream = new PassThrough(options);
 
         const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
-        const getContactNumberTypeStub = sinon.stub(
-          ClientContactNumberProjectionTransformer.prototype,
-          <any>'getContactNumberType'
-        );
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').resolves(aggregateContactNumberSetting);
+        aggregateContactNumberSetting.getContactNumberType.resolves({
+          _id: '60126eb559f35a4f3c34ff77',
+          name: 'some-name',
+          order: 1
+        });
 
         saveStub.callsFake((callback: any) => {
           callback();
         });
-
-        getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
 
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
         outputStream.on('data', (data) => {
@@ -147,12 +151,16 @@ describe('ClientContactNumberProjectionTransformer', () => {
         const outputStream = new PassThrough(options);
 
         const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
-        const getContactNumberTypeStub = sinon.stub(
-          ClientContactNumberProjectionTransformer.prototype,
-          <any>'getContactNumberType'
-        );
 
-        getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').resolves(aggregateContactNumberSetting);
+        aggregateContactNumberSetting.getContactNumberType.resolves({
+          _id: '60126eb559f35a4f3c34ff77',
+          name: 'some-name',
+          order: 1
+        });
+
         saveStub.callsFake((callback: any) => {
           callback({code: MONGO_ERROR_CODES.DUPLICATE_KEY});
         });
@@ -197,12 +205,15 @@ describe('ClientContactNumberProjectionTransformer', () => {
 
         const error = new Error('my error');
         const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
-        const getContactNumberTypeStub = sinon.stub(
-          ClientContactNumberProjectionTransformer.prototype,
-          <any>'getContactNumberType'
-        );
 
-        getContactNumberTypeStub.resolves({type_id: '60126eb559f35a4f3c34ff77', order: 1});
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').resolves(aggregateContactNumberSetting);
+        aggregateContactNumberSetting.getContactNumberType.resolves({
+          _id: '60126eb559f35a4f3c34ff77',
+          name: 'some-name',
+          order: 1
+        });
         saveStub.callsFake((callback: any) => {
           callback(error);
         });
@@ -210,6 +221,187 @@ describe('ClientContactNumberProjectionTransformer', () => {
         inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
         clientContactNumberProjectionTransformer.on('error', (err: Error) => {
           assert.deepEqual(err, error, 'Expected error was not returned');
+          done();
+        });
+
+        inputStream.write(testData);
+        inputStream.resume();
+
+        inputStream.end();
+      });
+
+      it('test ClientContactNumberAdded event failure when getContactNumberType fails with error', (done) => {
+        const testData = {
+          event: {
+            type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
+            aggregate_id: {
+              client_id: 'client-id',
+              name: 'client_contant_number'
+            },
+            data: {
+              _id: 'some-id',
+              type_id: '60126eb559f35a4f3c34ff77',
+              contact_number: '091100000000'
+            }
+          }
+        };
+        const options = {
+          objectMode: true,
+          highWaterMark: 1,
+          version: '3.6.3'
+        };
+        const inputStream = new PassThrough(options);
+        const outputStream = new PassThrough(options);
+
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').resolves(aggregateContactNumberSetting);
+        const error = new Error('error');
+
+        aggregateContactNumberSetting.getContactNumberType.rejects(error);
+        aggregateContactNumberSetting.getContactNumberType.calledOnceWith('some-id');
+        inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
+        clientContactNumberProjectionTransformer.on('error', (err: Error) => {
+          assert.deepEqual(err, error, 'Expected error was not returned');
+          done();
+        });
+
+        inputStream.write(testData);
+        inputStream.resume();
+
+        inputStream.end();
+      });
+
+      it('test ClientContactNumberAdded event failure when getContactNumberType return undefined', (done) => {
+        const testData = {
+          event: {
+            type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
+            aggregate_id: {
+              client_id: 'client-id',
+              name: 'client_contant_number'
+            },
+            data: {
+              _id: '60126eb559f35a4f3c34ff88',
+              type_id: '60126eb559f35a4f3c34ff77',
+              contact_number: '091100000000'
+            }
+          }
+        };
+        const options = {
+          objectMode: true,
+          highWaterMark: 1,
+          version: '3.6.3'
+        };
+        const inputStream = new PassThrough(options);
+        const outputStream = new PassThrough(options);
+        const error = new Error('error');
+        const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
+
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').resolves(aggregateContactNumberSetting);
+
+        aggregateContactNumberSetting.getContactNumberType.resolves(undefined);
+
+        saveStub.callsFake((callback: any) => {
+          callback(error);
+        });
+
+        inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
+        clientContactNumberProjectionTransformer.on('error', (err: Error) => {
+          assert.equal(err.message, 'Contact number type is undefined');
+          done();
+        });
+
+        inputStream.write(testData);
+        inputStream.resume();
+
+        inputStream.end();
+      });
+
+      it('test ClientContactNumberAdded event failure when getContactNumberType called with invalid argument', (done) => {
+        const testData = {
+          event: {
+            type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
+            aggregate_id: {
+              client_id: 'client-id',
+              name: 'client_contant_number'
+            },
+            data: {
+              _id: 'some-id',
+              type_id: '60126eb559f35a4f3c34ff77',
+              contact_number: '091100000000'
+            }
+          }
+        };
+        const options = {
+          objectMode: true,
+          highWaterMark: 1,
+          version: '3.6.3'
+        };
+        const inputStream = new PassThrough(options);
+        const outputStream = new PassThrough(options);
+        const error = new Error('error');
+        const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
+
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').resolves(aggregateContactNumberSetting);
+        aggregateContactNumberSetting.getContactNumberType.resolves(undefined);
+
+        saveStub.callsFake((callback: any) => {
+          callback(error);
+        });
+
+        inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
+        clientContactNumberProjectionTransformer.on('error', (err: Error) => {
+          aggregateContactNumberSetting.getContactNumberType.should.have.been.calledWith('60126eb559f35a4f3c34ff77');
+          done();
+        });
+
+        inputStream.write(testData);
+        inputStream.resume();
+
+        inputStream.end();
+      });
+
+      it('test ClientContactNumberAdded event failure when getContactNumberType getAggregate fails', (done) => {
+        const testData = {
+          event: {
+            type: EventsEnum.CLIENT_CONTACT_NUMBER_ADDED,
+            aggregate_id: {
+              client_id: 'client-id',
+              name: 'client_contant_number'
+            },
+            data: {
+              _id: 'some-id',
+              type_id: '60126eb559f35a4f3c34ff77',
+              contact_number: '091100000000'
+            }
+          }
+        };
+        const options = {
+          objectMode: true,
+          highWaterMark: 1,
+          version: '3.6.3'
+        };
+        const inputStream = new PassThrough(options);
+        const outputStream = new PassThrough(options);
+        const error = new Error('some-error');
+        const aggregateContactNumberSetting = stubConstructor(ContactNumberSettingAggregate);
+
+        sinon.stub(ContactNumberSettingRepository.prototype, 'getAggregate').rejects(error);
+        const saveStub = sinon.stub(ClientContactNumberProjection.prototype, 'save');
+
+        aggregateContactNumberSetting.getContactNumberType.should.not.have.been.called;
+        saveStub.should.not.have.been.called;
+        inputStream.pipe(clientContactNumberProjectionTransformer).pipe(outputStream);
+        clientContactNumberProjectionTransformer.on('error', (err: Error) => {
+          assert.deepEqual(err, error, 'Expected error was not returned');
+          done();
+        });
+
+        outputStream.on('end', () => {
           done();
         });
 

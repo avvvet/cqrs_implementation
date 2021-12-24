@@ -82,10 +82,12 @@ export class ClientContactNumberProjectionTransformer extends Transform {
 
         this.getContactNumberType(eventData.type_id)
           .then((contactNumberType) => {
-            this.addRecord(data, contactNumberType, callback);
+            if (!isUndefined(contactNumberType)) {
+              return this.addRecord(data, contactNumberType, callback);
+            }
+            callback(new Error('Contact number type is undefined'));
           })
           .catch((err) => callback(err));
-
         break;
       case EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED:
         this.removeRecord(criteria, data, callback);
