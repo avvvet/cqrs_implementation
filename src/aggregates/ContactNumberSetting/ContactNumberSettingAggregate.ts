@@ -114,6 +114,10 @@ export class ContactNumberSettingAggregate {
     return false;
   }
 
+  async getContactNumberType(contactNumberTypeId: string): Promise<ContactNumberTypeInterface | undefined> {
+    return find(this.aggregate.types, {_id: contactNumberTypeId});
+  }
+
   getLastEventId(): number {
     return this.aggregate.last_sequence_id;
   }
