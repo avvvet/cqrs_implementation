@@ -77,6 +77,7 @@ paths:
         - $ref: "#/parameters/page_filter"
         - $ref: "#/parameters/items_per_page_filter"
         - $ref: "#/parameters/query_contact_number_type_status"
+        - $ref: "#/parameters/query_contact_number_type_name"
         - $ref: "#/parameters/list_contact_number_type_sorting"
       responses:
         200:
@@ -279,6 +280,11 @@ parameters:
     enum:
       - enabled
       - disabled
+  query_contact_number_type_name:
+    name: name
+    in: query
+    description: "The contact number type name that should be filtered on"
+    type: string
   list_contact_number_type_sorting:
     name: sortBy
     in: query
@@ -686,6 +692,7 @@ definitions:
           - ENUM_MISMATCH
           - INVALID_TYPE
           - REQUIRED
+          - MINIMUM
       message:
         type: string
     additionalProperties: false

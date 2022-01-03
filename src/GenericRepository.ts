@@ -1,18 +1,11 @@
 import {LoggerContext} from 'a24-logzio-winston';
 import {FilterQuery, LeanDocument, Model} from 'mongoose';
 import {RuntimeError} from 'a24-node-error-utils';
-import {forIn, forEach} from 'lodash';
 
 type SortByType = {
   [key: string]: string;
 };
 
-/**
- * GenericRepository
- *  Based on the new implementation details the service layer no longer exists.
- *  Should this be injected into the well defined aggregates rather?
- *  IE a mixin concept / parasitic inheritance / Based on interfaces?
- */
 export class GenericRepository<SchemaType> {
   constructor(private logger: LoggerContext, private store: Model<SchemaType>) {}
 
@@ -40,7 +33,7 @@ export class GenericRepository<SchemaType> {
         data: data as LeanDocument<SchemaType>[]
       };
     } catch (error) {
-      this.logger.error('The GET list call for tags failed', error);
+      this.logger.error('The GET list failed', error);
       throw error;
     }
   }
@@ -88,28 +81,11 @@ export class GenericRepository<SchemaType> {
   }
 
   /**
-   * get projection object, we exclude fields that we enabled `http_hidden`
+   * get projection object
    */
   private getProjection(): {[key: string]: number} {
     const result: {[key: string]: number} = {};
 
-    // forEach<string[]>(this.getHiddenFields(), (value: string) => {
-    //   result[value] = 0;
-    // });
     return result;
   }
-
-  /**
-   * get list of hidden fields from the model schema
-   */
-  // private getHiddenFields(): string[] {
-  //   const excludes: string[] = [];
-
-  //   forIn(this.store.schema.obj, (config, field) => {
-  //     if (config.http_hidden) {
-  //       excludes.push(field);
-  //     }
-  //   });
-  //   return excludes;
-  // }
 }
