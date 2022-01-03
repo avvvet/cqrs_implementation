@@ -386,14 +386,7 @@ describe('ContactNumberType', () => {
       getSkipValue.should.have.been.calledWith(params);
       getSortParams.should.have.been.calledWith(params);
       getQuery.should.have.been.calledWith(params);
-      listResources.should.have.been.calledWith(
-        {
-          ...query
-        },
-        limit,
-        skip,
-        sortBy
-      );
+      listResources.should.have.been.calledWith(query, limit, skip, sortBy);
       res.statusCode.should.equal(200);
       setPaginationHeaders.should.have.been.calledWith(req, res, 1);
       end.should.have.been.calledWith(JSON.stringify(data));
@@ -433,14 +426,7 @@ describe('ContactNumberType', () => {
       getSkipValue.should.have.been.calledWith(params);
       getSortParams.should.have.been.calledWith(params);
       getQuery.should.have.been.calledWith(params);
-      listResources.should.have.been.calledWith(
-        {
-          ...query
-        },
-        limit,
-        skip,
-        sortBy
-      );
+      listResources.should.have.been.calledWith(query, limit, skip, sortBy);
       res.statusCode.should.equal(204);
       setPaginationHeaders.should.not.have.been.called;
       end.should.have.been.calledWith();
@@ -475,14 +461,7 @@ describe('ContactNumberType', () => {
       getSkipValue.should.have.been.calledWith(params);
       getSortParams.should.have.been.calledWith(params);
       getQuery.should.have.been.calledWith(params);
-      listResources.should.have.been.calledWith(
-        {
-          ...query
-        },
-        limit,
-        skip,
-        sortBy
-      );
+      listResources.should.have.been.calledWith(query, limit, skip, sortBy);
       next.should.have.been.calledWith(error);
     });
   });
