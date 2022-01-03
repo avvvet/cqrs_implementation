@@ -1,5 +1,8 @@
 {
   "ss_domain_event": {
     "pod_id": "HOSTNAME"
+  },
+  "exposed_server": {
+    "port": "STAFFSHIFT_CLIENT_MANAGEMENT_SERVICE_SERVICE_PORT"
   }
 }
