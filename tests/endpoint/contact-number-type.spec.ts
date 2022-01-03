@@ -194,7 +194,7 @@ describe('/contact-number-type', () => {
         properties: {
           code: {
             type: 'string',
-            enum: ['PATTERN', 'ENUM_MISMATCH', 'INVALID_TYPE', 'REQUIRED']
+            enum: ['PATTERN', 'ENUM_MISMATCH', 'INVALID_TYPE', 'REQUIRED', 'MINIMUM']
           },
           message: {
             type: 'string'
