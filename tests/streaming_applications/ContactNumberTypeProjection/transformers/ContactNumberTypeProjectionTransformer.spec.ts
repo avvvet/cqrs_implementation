@@ -140,7 +140,7 @@ describe('ContactNumberTypeProjectionTransformer', () => {
 
         const saveStub = sinon.stub(ContactNumberTypeProjection.prototype, 'save');
 
-        saveStub.callsFake((callback) => {
+        saveStub.callsFake((callback: any) => {
           callback({code: MONGO_ERROR_CODES.DUPLICATE_KEY});
         });
 

@@ -1,7 +1,7 @@
 import {MongoClients} from './streaming_applications/core/MongoClients';
 import {CLIENT_MANAGEMENT_DB_KEY} from './streaming_applications/DatabaseConfigKeys';
 import {ResumeTokenCollectionManager} from './streaming_applications/core/ResumeTokenCollectionManager';
-import {isString} from 'lodash';
+import {isString, cloneDeep} from 'lodash';
 import mongoose from 'mongoose';
 import StreamingApplications from './streaming_applications';
 import config from 'config';
@@ -14,11 +14,9 @@ import {GracefulShutdownConfigurationInterface} from 'GracefulShutdownConfigurat
 const StreamTracker = 'StreamTracker';
 
 mongoose.Promise = global.Promise;
+const mongoConfig = cloneDeep(config.get<MongoConfigurationInterface>('mongo'));
 
-mongoose.connect(
-  config.get<MongoConfigurationInterface>('mongo').database_host,
-  config.get<MongoConfigurationInterface>('mongo').options
-);
+mongoose.connect(mongoConfig.database_host, mongoConfig.options);
 
 mongoose.connection.on('error', (error: Error) => {
   const loggerContext = Logger.getContext('startup');

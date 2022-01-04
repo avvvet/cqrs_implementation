@@ -1,4 +1,5 @@
 import ContactNumberTypeProjection from './ContactNumberTypeProjection/watch';
-const watcherListing = [ContactNumberTypeProjection];
+import ClientContactNumberProjection from './ClientContactNumberProjection/watch';
+const watcherListing = [ContactNumberTypeProjection, ClientContactNumberProjection];
 
 export default watcherListing;
