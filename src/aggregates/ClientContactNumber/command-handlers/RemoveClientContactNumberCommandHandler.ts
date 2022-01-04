@@ -16,7 +16,7 @@ export class RemoveClientContactNumberCommandHandler implements ClientContactNum
   async execute(clientId: string, commandData: RemoveClientContactNumberCommandDataInterface): Promise<void> {
     const aggregateClientContactNumber = await this.clientContactNumberRepository.getAggregate(clientId);
 
-    aggregateClientContactNumber.validateRemoveClientContactNumberInvariants(commandData._id);
+    await aggregateClientContactNumber.validateRemoveClientContactNumberInvariants(commandData._id);
 
     const eventId = aggregateClientContactNumber.getLastEventId();
     const aggregateId = aggregateClientContactNumber.getId();

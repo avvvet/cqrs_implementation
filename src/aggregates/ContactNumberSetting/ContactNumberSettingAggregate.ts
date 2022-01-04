@@ -106,12 +106,7 @@ export class ContactNumberSettingAggregate {
   }
 
   contactNumberTypeExists(contactNumberTypeId: string): boolean {
-    const clientContactNumber = find(this.aggregate.types, {_id: contactNumberTypeId});
-
-    if (clientContactNumber) {
-      return true;
-    }
-    return false;
+    return !!find(this.aggregate.types, {_id: contactNumberTypeId});
   }
 
   async getContactNumberType(contactNumberTypeId: string): Promise<ContactNumberTypeInterface | undefined> {

@@ -30,14 +30,14 @@ export class ClientContactNumberAggregate {
   /**
    * Enforces all invariant checks that needs to be valid before adding a new contact number
    */
-  async validateAddClientContactNumberInvariants(contactNumberTypeId: string, contactNumber: string) {
+  async validateAddClientContactNumberInvariants(contactNumberTypeId: string, contactNumber: string): Promise<void> {
     const aggregateContactNumberSetting = await this.contactNumberSettingRepository.getAggregate();
 
     if (!aggregateContactNumberSetting.contactNumberTypeExists(contactNumberTypeId)) {
-      throw new ValidationError('Not allowed. Contact number type not exists', [
+      throw new ValidationError('Not allowed. Contact number type does not exist', [
         {
           code: 'CONTACT_NUMBER_TYPE_NOT_FOUND',
-          message: `contact number type '${contactNumberTypeId}' not exists.`,
+          message: `contact number type '${contactNumberTypeId}' does not exist.`,
           path: ['type_id']
         }
       ]);
@@ -54,7 +54,7 @@ export class ClientContactNumberAggregate {
     }
 
     if (this.clientContactNumberExists(contactNumber, contactNumberTypeId)) {
-      throw new ValidationError('Not allowed. Client Contact number exists', [
+      throw new ValidationError('Not allowed. Client Contact number already exists', [
         {
           code: 'CONTACT_NUMBER_ALREADY_EXISTS',
           message: `Client contact number '${contactNumber}' already exists.`,
@@ -67,7 +67,7 @@ export class ClientContactNumberAggregate {
   /**
    * Enforces all invariant checks that needs to be valid before removing a contact number
    */
-  validateRemoveClientContactNumberInvariants(contactNumberId: string) {
+  validateRemoveClientContactNumberInvariants(contactNumberId: string): void {
     if (!this.clientContactNumberIdExists(contactNumberId)) {
       throw new ResourceNotFoundError('Not allowed. Client Contact number not found');
     }

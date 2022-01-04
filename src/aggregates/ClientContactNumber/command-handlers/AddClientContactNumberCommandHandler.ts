@@ -4,8 +4,6 @@ import {ClientContactNumberCommandHandlerInterface} from '../types/ClientContact
 import {AddClientContactNumberCommandDataInterface} from '../types/CommandDataTypes';
 import {ClientContactNumberCommandEnum} from '../types';
 import {EventsEnum} from '../../../Events';
-import {ContactNumberSettingRepository} from '../../ContactNumberSetting';
-import {ValidationError} from 'a24-node-error-utils';
 
 /**
  * Class responsible for handling add client contact number command
@@ -17,13 +15,14 @@ export class AddClientContactNumberCommandHandler implements ClientContactNumber
 
   async execute(clientId: string, commandData: AddClientContactNumberCommandDataInterface): Promise<void> {
     const aggregateClientContactNumber = await this.clientContactNumberRepository.getAggregate(clientId);
-    let eventId = aggregateClientContactNumber.getLastEventId();
-    const aggregateId = aggregateClientContactNumber.getId();
 
     await aggregateClientContactNumber.validateAddClientContactNumberInvariants(
       commandData.type_id,
       commandData.contact_number
     );
+
+    let eventId = aggregateClientContactNumber.getLastEventId();
+    const aggregateId = aggregateClientContactNumber.getId();
 
     await this.clientContactNumberRepository.save([
       {

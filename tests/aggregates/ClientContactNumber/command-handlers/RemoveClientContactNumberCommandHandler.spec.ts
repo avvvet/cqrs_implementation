@@ -12,15 +12,15 @@ describe('RemoveClientContactNumberCommandHandler', () => {
   afterEach(() => {
     sinon.restore();
   });
+
   describe('execute()', () => {
     it('Test success scenario repositoryClientContactNumber save persistes ', async () => {
       const repositoryClientContactNumber = stubConstructor(ClientContactNumberRepository);
       const aggregateClientContactNumber = stubConstructor(ClientContactNumberAggregate);
 
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
-
-      aggregateClientContactNumber.clientContactNumberIdExists.returns(true);
-
+      aggregateClientContactNumber.validateRemoveClientContactNumberInvariants.returns();
+      repositoryClientContactNumber.save.resolves();
       aggregateClientContactNumber.getLastEventId.returns(2);
       const clientContactNumberAggregateId = {
         client_id: 'sample-client-id',
@@ -36,7 +36,9 @@ describe('RemoveClientContactNumberCommandHandler', () => {
 
       await handler.execute(clientId, command);
 
-      aggregateClientContactNumber.clientContactNumberIdExists.should.have.calledWith(command._id);
+      aggregateClientContactNumber.validateRemoveClientContactNumberInvariants.should.have.been.calledOnceWith(
+        command._id
+      );
 
       const eventData = [
         {
@@ -52,7 +54,7 @@ describe('RemoveClientContactNumberCommandHandler', () => {
       repositoryClientContactNumber.save.getCall(0).args[0].should.deep.equal(eventData);
     });
 
-    it('Test failure scenario : clientContactNumberIdExists', async () => {
+    it('test that error is thrown when invariant check fails', async () => {
       const clientId = 'sample-client-id';
       const command: RemoveClientContactNumberCommandDataInterface = {
         _id: 'id'
@@ -61,15 +63,52 @@ describe('RemoveClientContactNumberCommandHandler', () => {
       const aggregateClientContactNumber = stubConstructor(ClientContactNumberAggregate);
 
       repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
-      aggregateClientContactNumber.clientContactNumberIdExists.returns(false);
+      aggregateClientContactNumber.validateRemoveClientContactNumberInvariants.throws(new Error('one error'));
       const handler = new RemoveClientContactNumberCommandHandler(repositoryClientContactNumber);
 
-      const error = await handler
-        .execute(clientId, command)
-        .should.have.been.rejectedWith(ResourceNotFoundError, 'Not allowed. Client Contact number not found');
+      await handler.execute(clientId, command).should.have.been.rejectedWith(Error, 'one error');
 
-      aggregateClientContactNumber.clientContactNumberIdExists.should.have.calledOnceWith(command._id);
+      aggregateClientContactNumber.validateRemoveClientContactNumberInvariants.should.have.been.calledOnceWith(
+        command._id
+      );
       repositoryClientContactNumber.save.should.not.have.been.called;
+    });
+
+    it('test error is thrown when events cannot be persisted/stored', async () => {
+      const clientId = 'sample-client-id';
+      const clientContactNumberAggregateId = {
+        client_id: clientId,
+        name: 'client_contact_number'
+      };
+      const command: RemoveClientContactNumberCommandDataInterface = {
+        _id: 'id'
+      };
+      const repositoryClientContactNumber = stubConstructor(ClientContactNumberRepository);
+      const aggregateClientContactNumber = stubConstructor(ClientContactNumberAggregate);
+
+      repositoryClientContactNumber.getAggregate.resolves(aggregateClientContactNumber);
+      aggregateClientContactNumber.validateRemoveClientContactNumberInvariants.returns();
+      aggregateClientContactNumber.getLastEventId.returns(2);
+      aggregateClientContactNumber.getId.returns(clientContactNumberAggregateId);
+      repositoryClientContactNumber.save.rejects(new Error('save error'));
+      const handler = new RemoveClientContactNumberCommandHandler(repositoryClientContactNumber);
+
+      await handler.execute(clientId, command).should.have.been.rejectedWith(Error, 'save error');
+      aggregateClientContactNumber.validateRemoveClientContactNumberInvariants.should.have.been.calledOnceWith(
+        command._id
+      );
+      const eventData = [
+        {
+          type: EventsEnum.CLIENT_CONTACT_NUMBER_REMOVED,
+          aggregate_id: {client_id: 'sample-client-id', name: 'client_contact_number'},
+          data: {
+            _id: 'id'
+          },
+          sequence_id: 3
+        }
+      ];
+
+      repositoryClientContactNumber.save.getCall(0).args[0].should.deep.equal(eventData);
     });
   });
 });
