@@ -4,7 +4,6 @@ import {ClientContactNumberCommandHandlerInterface} from '../types/ClientContact
 import {RemoveClientContactNumberCommandDataInterface} from '../types/CommandDataTypes';
 import {ClientContactNumberCommandEnum} from '../types';
 import {EventsEnum} from '../../../Events';
-import {ResourceNotFoundError} from 'a24-node-error-utils';
 
 /**
  * Class responsible for handling remove client contact number command
@@ -16,12 +15,11 @@ export class RemoveClientContactNumberCommandHandler implements ClientContactNum
 
   async execute(clientId: string, commandData: RemoveClientContactNumberCommandDataInterface): Promise<void> {
     const aggregateClientContactNumber = await this.clientContactNumberRepository.getAggregate(clientId);
+
+    aggregateClientContactNumber.validateRemoveClientContactNumberInvariants(commandData._id);
+
     const eventId = aggregateClientContactNumber.getLastEventId();
     const aggregateId = aggregateClientContactNumber.getId();
-
-    if (!aggregateClientContactNumber.clientContactNumberIdExists(commandData._id)) {
-      throw new ResourceNotFoundError('Not allowed. Client Contact number not found');
-    }
 
     await this.clientContactNumberRepository.save([
       {
