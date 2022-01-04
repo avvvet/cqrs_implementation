@@ -195,7 +195,7 @@ describe('ClientContactNumberAggregate', function () {
       contactNumberSettingRepository.getAggregate.should.have.been.called;
     });
 
-    it('test that validation error is thrown when client contact number client already exists', async () => {
+    it('test that validation error is thrown when client contact number already exists', async () => {
       const contactNumber = '09111111';
       const contactTypeId = 'some id';
       const aggregateId = {
