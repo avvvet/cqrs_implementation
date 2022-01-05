@@ -1,1 +1,5 @@
-{}
+{
+  "exposed_server": {
+    "host": "staffshift-client-management-service"
+  }
+}
