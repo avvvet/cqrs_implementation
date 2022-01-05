@@ -134,7 +134,7 @@ export const getClientContactNumber = async (
   } catch (err) {
     req.Logger.error('getClientContactNumber unknown error', {
       err,
-      contactNumberTypeId: get(req, 'swagger.params.client_contact_number_id.value')
+      clientContactNumberId: get(req, 'swagger.params.client_contact_number_id.value')
     });
     next(err);
   }
