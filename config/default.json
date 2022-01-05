@@ -49,18 +49,6 @@
       "useUnifiedTopology": true
     }
   },
-  "octophant_audit": {
-    "service_identifier": "",
-    "pubsub_project": {
-      "projectId": "staffshift-dev-env"
-    },
-    "pubsub_topics": [
-      {
-        "name": "staffshift.audit",
-        "subscribers": []
-      }
-    ]
-  },
   "api_token": "SomeSecret",
   "tracing": {
     "key_file": "",
