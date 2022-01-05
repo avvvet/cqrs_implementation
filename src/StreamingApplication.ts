@@ -15,7 +15,6 @@ const StreamTracker = 'StreamTracker';
 const mongoConfig = cloneDeep(config.get<MongoConfigurationInterface>('mongo'));
 
 mongoose.Promise = global.Promise;
-const mongoConfig = cloneDeep(config.get<MongoConfigurationInterface>('mongo'));
 
 mongoose.connect(mongoConfig.database_host, mongoConfig.options);
 
