@@ -5,6 +5,7 @@ import {api} from '../tools/TestUtilsApi';
 import {getJWT} from '../tools/TestUtilsJwt';
 import _ from 'lodash';
 import {ContactNumberTypeScenario} from './scenarios/ContactNumberTypeScenario';
+import {ContactNumberTypeProjectionScenarios} from './scenarios/ContactNumberTypeProjectionScenarios';
 
 TestUtilsZSchemaFormatter.format();
 const validator = new ZSchema({});
@@ -143,6 +144,121 @@ describe('/contact-number-type/{contact_number_type_id}', () => {
         name: 'sample',
         order: 1
       });
+
+      assert.equal(res.statusCode, 404);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+  });
+
+  describe('get', () => {
+    it('should respond with 200 Retrieves a single Contact Number Type', async () => {
+      const schema = {
+        type: 'object',
+        required: ['_id', 'name', 'order', 'status', 'updated_at', 'created_at', '__v'],
+        properties: {
+          _id: {
+            type: 'string',
+            pattern: '^[0-9a-fA-F]{24}$'
+          },
+          name: {
+            type: 'string'
+          },
+          order: {
+            type: 'integer'
+          },
+          status: {
+            type: 'string',
+            enum: ['enabled', 'disabled']
+          },
+          updated_at: {
+            type: 'string',
+            format: 'date-time'
+          },
+          created_at: {
+            type: 'string',
+            format: 'date-time'
+          },
+          __v: {
+            type: 'integer'
+          }
+        },
+        additionalProperties: false
+      };
+
+      await ContactNumberTypeProjectionScenarios.create({
+        _id: contactNumberTypeId
+      });
+      const res = await api.get(`/contact-number-type/${contactNumberTypeId}`).set(headers).send();
+
+      assert.equal(res.statusCode, 200);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+
+    it('should respond with 400 Validation error', async () => {
+      const schema = {
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['PATTERN', 'REQUIRED']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
+      };
+
+      const res = await api.get('/contact-number-type/invalid').set(headers).send();
+
+      assert.equal(res.statusCode, 400);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+
+    it('should respond with 401', async () => {
+      const schema = {
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['UNAUTHORIZED']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
+      };
+      const otherHeaders = _.cloneDeep(headers);
+
+      otherHeaders['x-request-jwt'] = 'invalid';
+      const res = await api.get(`/contact-number-type/${contactNumberTypeId}`).set(otherHeaders).send();
+
+      assert.equal(res.statusCode, 401);
+      assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
+    });
+
+    it('should respond with 404', async () => {
+      const otherContactNumberTypeId = '6193a668de89ae5ab5000002';
+      const schema = {
+        description: 'No resource found',
+        type: 'object',
+        required: ['code', 'message'],
+        properties: {
+          code: {
+            type: 'string',
+            enum: ['RESOURCE_NOT_FOUND']
+          },
+          message: {
+            type: 'string'
+          }
+        },
+        additionalProperties: false
+      };
+
+      const res = await api.get(`/contact-number-type/${otherContactNumberTypeId}`).set(headers).send();
 
       assert.equal(res.statusCode, 404);
       assert.isTrue(validator.validate(res.body, schema), 'response schema expected to be valid');
