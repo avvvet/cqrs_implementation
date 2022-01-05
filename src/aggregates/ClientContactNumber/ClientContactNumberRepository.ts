@@ -3,6 +3,7 @@ import {EventRepository, EventInterface} from '../../EventRepository';
 import {ClientContactNumberAggregateRecordInterface} from './types';
 import {EventStoreModelInterface} from '../../models/EventStore';
 import {ClientContactNumberWriteProjectionHandler} from './ClientContactNumberWriteProjectionHandler';
+import {ContactNumberSettingRepository, ContactNumberSettingWriteProjectionHandler} from '../ContactNumberSetting';
 
 /**
  * Class responsible for aggregate retrieval and saving events to event store
@@ -12,8 +13,10 @@ export class ClientContactNumberRepository {
 
   constructor(
     private eventRepository: EventRepository,
-    private writeProjectionHandler: ClientContactNumberWriteProjectionHandler
+    private writeProjectionHandler: ClientContactNumberWriteProjectionHandler,
+    private contactNumberSettingRepository: ContactNumberSettingRepository
   ) {}
+
   /**
    * Build and returns an aggregate
    */
@@ -26,7 +29,8 @@ export class ClientContactNumberRepository {
 
     return new ClientContactNumberAggregate(
       {client_id: clientId, name: ClientContactNumberRepository.AGGREGATE_ID_NAME},
-      projection
+      projection,
+      this.contactNumberSettingRepository
     );
   }
 

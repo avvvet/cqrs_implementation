@@ -5,18 +5,15 @@ import {
 } from '../../../src/aggregates/ClientContactNumber/command-handlers';
 import {ClientContactNumberCommandBus} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberCommandBus';
 import {ClientContactNumberRepository} from '../../../src/aggregates/ClientContactNumber/ClientContactNumberRepository';
-import {ContactNumberSettingRepository} from '../../../src/aggregates/ContactNumberSetting/ContactNumberSettingRepository';
 import {ClientContactNumberCommandEnum} from '../../../src/aggregates/ClientContactNumber/types';
 
 describe('ClientContactNumberCommandBus', () => {
   let commandBus: ClientContactNumberCommandBus;
   let repositoryClientContactNumber: ClientContactNumberRepository;
-  let repositoryContactNumberSetting: ContactNumberSettingRepository;
 
   beforeEach(() => {
     commandBus = new ClientContactNumberCommandBus();
     repositoryClientContactNumber = stubConstructor(ClientContactNumberRepository);
-    repositoryContactNumberSetting = stubConstructor(ContactNumberSettingRepository);
   });
 
   afterEach(() => {
@@ -25,9 +22,7 @@ describe('ClientContactNumberCommandBus', () => {
 
   describe('addHandler()', () => {
     it('should return class instance', () => {
-      const instance = commandBus.addHandler(
-        new AddClientContactNumberCommandHandler(repositoryClientContactNumber, repositoryContactNumberSetting)
-      );
+      const instance = commandBus.addHandler(new AddClientContactNumberCommandHandler(repositoryClientContactNumber));
 
       instance.should.deep.equal(commandBus);
     });
@@ -79,10 +74,7 @@ describe('ClientContactNumberCommandBus', () => {
           contact_number: '0911'
         }
       };
-      const handler = new AddClientContactNumberCommandHandler(
-        repositoryClientContactNumber,
-        repositoryContactNumberSetting
-      );
+      const handler = new AddClientContactNumberCommandHandler(repositoryClientContactNumber);
       const executeStub = sinon.stub(handler, 'execute');
 
       commandBus.addHandler(handler);

@@ -67,11 +67,6 @@ export const removeClientContactNumber = async (
   next: (error?: Error) => void
 ): Promise<void> => {
   try {
-    const payload = get(
-      req,
-      'swagger.params.add_client_contact_number_payload.value',
-      {}
-    ) as ClientContactNumberInterface;
     const clientId = get(req, 'swagger.params.client_id.value', '');
     const clientContactNumberId = get(req, 'swagger.params.client_contact_number_id.value', '');
     const eventRepository = req.eventRepository;

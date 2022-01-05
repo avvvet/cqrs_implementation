@@ -7,8 +7,8 @@ import {
 } from '../aggregates/ClientContactNumber/command-handlers';
 import {EventRepository} from '../EventRepository';
 import {
-  ContactNumberSettingWriteProjectionHandler,
-  ContactNumberSettingRepository
+  ContactNumberSettingRepository,
+  ContactNumberSettingWriteProjectionHandler
 } from '../aggregates/ContactNumberSetting';
 
 /**
@@ -21,18 +21,13 @@ export class ClientContactNumberCommandBusFactory {
   static getCommandBus(eventRepository: EventRepository): ClientContactNumberCommandBus {
     const clientContactNumberRepository = new ClientContactNumberRepository(
       eventRepository,
-      new ClientContactNumberWriteProjectionHandler()
-    );
-    const contactNumberSettingRepository = new ContactNumberSettingRepository(
-      eventRepository,
-      new ContactNumberSettingWriteProjectionHandler()
+      new ClientContactNumberWriteProjectionHandler(),
+      new ContactNumberSettingRepository(eventRepository, new ContactNumberSettingWriteProjectionHandler())
     );
     const commandBus = new ClientContactNumberCommandBus();
 
     commandBus
-      .addHandler(
-        new AddClientContactNumberCommandHandler(clientContactNumberRepository, contactNumberSettingRepository)
-      )
+      .addHandler(new AddClientContactNumberCommandHandler(clientContactNumberRepository))
       .addHandler(new RemoveClientContactNumberCommandHandler(clientContactNumberRepository));
     return commandBus;
   }
