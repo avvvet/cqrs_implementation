@@ -1,6 +1,11 @@
 import {LoggerContext} from 'a24-logzio-winston';
 import {FilterQuery, LeanDocument, Model} from 'mongoose';
 import {RuntimeError} from 'a24-node-error-utils';
+import {forEach, forIn} from 'lodash';
+
+type ConfigType = {
+  [key: string]: unknown;
+};
 
 type SortByType = {
   [key: string]: string;
@@ -81,11 +86,28 @@ export class GenericRepository<SchemaType> {
   }
 
   /**
-   * get projection object
+   * get projection object, we exclude fields that we enabled `http_hidden`
    */
   private getProjection(): {[key: string]: number} {
     const result: {[key: string]: number} = {};
 
+    forEach<string[]>(this.getHiddenFields(), (value: string) => {
+      result[value] = 0;
+    });
     return result;
+  }
+
+  /**
+   * get list of hidden fields from the model schema
+   */
+  private getHiddenFields(): string[] {
+    const excludes: string[] = [];
+
+    forIn(this.store.schema.obj, (config, field) => {
+      if ((config as ConfigType).http_hidden) {
+        excludes.push(field);
+      }
+    });
+    return excludes;
   }
 }

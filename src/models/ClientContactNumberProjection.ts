@@ -15,7 +15,8 @@ const clientContactNumber = new Schema<ClientContactNumberProjectionDocumentType
     client_id: {
       type: String,
       required: true,
-      description: 'Client Id'
+      description: 'Client Id',
+      http_hidden: true
     },
     type_id: {
       type: String,

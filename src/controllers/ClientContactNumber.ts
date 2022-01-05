@@ -1,5 +1,5 @@
 import {ServerResponse} from 'http';
-import {get} from 'lodash';
+import {get, isEmpty} from 'lodash';
 import {SwaggerRequestInterface} from 'SwaggerRequestInterface';
 import {ClientContactNumberCommandEnum, ClientContactNumberInterface} from '../aggregates/ClientContactNumber/types';
 import {
@@ -9,6 +9,13 @@ import {
 import {ClientContactNumberCommandBusFactory} from '../factories/ClientContactNumberCommandBusFactory';
 import {Types} from 'mongoose';
 import {ValidationError, ResourceNotFoundError} from 'a24-node-error-utils';
+import {QueryHelper} from 'a24-node-query-utils';
+import {PaginationHelper} from '../helpers/PaginationHelper';
+import {
+  ClientContactNumberProjectionDocumentType,
+  ClientContactNumberProjection
+} from '../models/ClientContactNumberProjection';
+import {GenericRepository} from '../GenericRepository';
 
 /**
  * Add Contact Number
@@ -90,5 +97,86 @@ export const removeClientContactNumber = async (
       req.Logger.error('Unknown error in remove client contact number', error);
     }
     return next(error);
+  }
+};
+
+/**
+ * Get Client Contact number
+ *
+ * @param req - The http request object
+ * @param res - The http response object
+ * @param next - The callback used to pass control to the next middleware
+ */
+export const getClientContactNumber = async (
+  req: SwaggerRequestInterface,
+  res: ServerResponse,
+  next: (error?: Error) => void
+): Promise<void> => {
+  try {
+    const swaggerParams = req.swagger.params || {};
+    const clientId = get(req, 'swagger.params.client_id.value', '');
+    const clientContactNumberId = get(swaggerParams, 'client_contact_number_id.value');
+    const repository = new GenericRepository<ClientContactNumberProjectionDocumentType>(
+      req.Logger,
+      ClientContactNumberProjection
+    );
+    const record = await repository.findOne({
+      _id: clientContactNumberId,
+      client_id: clientId
+    });
+
+    if (!record) {
+      return next(new ResourceNotFoundError('Client contact number not found'));
+    }
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(record.toJSON()));
+  } catch (err) {
+    req.Logger.error('getClientContactNumber unknown error', {
+      err,
+      contactNumberTypeId: get(req, 'swagger.params.client_contact_number_id.value')
+    });
+    next(err);
+  }
+};
+
+/**
+ * List Client Contact Numbers
+ *
+ * @param req - The http request object
+ * @param res - The http response object
+ * @param next - The next function
+ */
+export const listClientContactNumber = async (
+  req: SwaggerRequestInterface,
+  res: ServerResponse,
+  next: (error: Error) => void
+): Promise<void> => {
+  try {
+    const clientId = get(req, 'swagger.params.client_id.value', '');
+    const swaggerParams = req.swagger.params || {};
+    const limit = QueryHelper.getItemsPerPage(swaggerParams);
+    const skip = QueryHelper.getSkipValue(swaggerParams, limit);
+    const sortBy = QueryHelper.getSortParams(swaggerParams);
+    const query = QueryHelper.getQuery(swaggerParams);
+
+    query.client_id = clientId;
+    const repository = new GenericRepository<ClientContactNumberProjectionDocumentType>(
+      req.Logger,
+      ClientContactNumberProjection
+    );
+    const {count, data} = await repository.listResources(query, limit, skip, sortBy);
+
+    if (isEmpty(data)) {
+      res.statusCode = 204;
+      res.end();
+    } else {
+      PaginationHelper.setPaginationHeaders(req, res, count);
+      res.end(JSON.stringify(data));
+    }
+    req.Logger.info('listClientContactNumber completed', {statusCode: res.statusCode});
+  } catch (err) {
+    req.Logger.error('listClientContactNumber unknown error', {err});
+    next(err);
   }
 };
