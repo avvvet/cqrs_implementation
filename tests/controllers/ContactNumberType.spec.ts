@@ -5,12 +5,17 @@ import {
   addContactNumberType,
   updateContactNumberType,
   enableContactNumberType,
-  disableContactNumberType
+  disableContactNumberType,
+  getContactNumberType,
+  listContactNumberType
 } from '../../src/controllers/ContactNumberType';
 import {fakeRequest, fakeResponse} from '../tools/TestUtilsHttp';
 import sinon from 'sinon';
 import {Types, Error} from 'mongoose';
 import {ValidationError, ResourceNotFoundError} from 'a24-node-error-utils';
+import {GenericRepository} from '../../src/GenericRepository';
+import {QueryHelper} from 'a24-node-query-utils';
+import {PaginationHelper} from '../../src/helpers/PaginationHelper';
 
 describe('ContactNumberType', () => {
   afterEach(() => {
@@ -290,6 +295,174 @@ describe('ContactNumberType', () => {
 
       await disableContactNumberType(req, res, next);
       assert.equal(next.callCount, 1, 'Expected next to be called');
+    });
+  });
+
+  describe('getContactNumberType()', () => {
+    it('success scenario', async () => {
+      const contactNumberTypeId = '61c98bde4ed87fdc1b86fb4f';
+      const params = {
+        contact_number_type_id: {value: contactNumberTypeId}
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+      const end = sinon.stub(res, 'end');
+      const setHeader = sinon.stub(res, 'setHeader');
+      const record: any = {
+        _id: contactNumberTypeId,
+        name: 'mobile',
+        order: 1,
+        status: 'enabled',
+        toJSON: () => record
+      };
+      const findOne = sinon.stub(GenericRepository.prototype, 'findOne').resolves(record);
+
+      await getContactNumberType(req, res, next);
+      findOne.should.have.been.calledWith({
+        _id: contactNumberTypeId
+      });
+      setHeader.should.have.been.calledWith('Content-Type', 'application/json');
+      end.should.have.been.calledWith(JSON.stringify(record));
+    });
+
+    it('resource not found scenario', async () => {
+      const contactNumberTypeId = 'contact number type id';
+      const params = {
+        contact_number_type_id: {value: contactNumberTypeId}
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+      const end = sinon.stub(res, 'end');
+      const setHeader = sinon.stub(res, 'setHeader');
+      const findOne = sinon.stub(GenericRepository.prototype, 'findOne').resolves();
+
+      await getContactNumberType(req, res, next);
+      findOne.should.have.been.calledWith({
+        _id: contactNumberTypeId
+      });
+      setHeader.should.not.have.been.called;
+      end.should.not.have.been.called;
+      next.getCall(0).args[0].should.be.instanceOf(ResourceNotFoundError);
+    });
+  });
+
+  describe('listContactNumberType()', () => {
+    it('success scenario 200', async () => {
+      const params = {
+        status: {
+          value: 'enabled'
+        }
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+      const end = sinon.stub(res, 'end');
+
+      const limit = 2;
+      const skip = 10;
+      const sortBy = ['name'];
+      const query = {sampleQuery: 'ok'};
+      const data = [{sample: 'ok'}];
+      const getItemsPerPage = sinon.stub(QueryHelper, 'getItemsPerPage').returns(limit);
+      const getSkipValue = sinon.stub(QueryHelper, 'getSkipValue').returns(skip);
+      const getSortParams = sinon.stub(QueryHelper, 'getSortParams').returns(sortBy);
+      const getQuery = sinon.stub(QueryHelper, 'getQuery').returns(query);
+      const listResources = sinon.stub(GenericRepository.prototype, 'listResources').resolves({
+        count: 1,
+        data
+      });
+      const setPaginationHeaders = sinon.stub(PaginationHelper, 'setPaginationHeaders').resolves();
+
+      await listContactNumberType(req, res, next);
+      getItemsPerPage.should.have.been.calledWith(params);
+      getSkipValue.should.have.been.calledWith(params);
+      getSortParams.should.have.been.calledWith(params);
+      getQuery.should.have.been.calledWith(params);
+      listResources.should.have.been.calledWith(query, limit, skip, sortBy);
+      res.statusCode.should.equal(200);
+      setPaginationHeaders.should.have.been.calledWith(req, res, 1);
+      end.should.have.been.calledWith(JSON.stringify(data));
+      next.should.not.have.been.called;
+    });
+
+    it('success scenario 204', async () => {
+      const params = {
+        status: {
+          value: 'enabled'
+        }
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+      const end = sinon.stub(res, 'end');
+
+      const limit = 5;
+      const skip = 25;
+      const sortBy = ['name'];
+      const query = {sampleQuery: 'ok'};
+      const data: any[] = [];
+      const getItemsPerPage = sinon.stub(QueryHelper, 'getItemsPerPage').returns(limit);
+      const getSkipValue = sinon.stub(QueryHelper, 'getSkipValue').returns(skip);
+      const getSortParams = sinon.stub(QueryHelper, 'getSortParams').returns(sortBy);
+      const getQuery = sinon.stub(QueryHelper, 'getQuery').returns(query);
+      const listResources = sinon.stub(GenericRepository.prototype, 'listResources').resolves({
+        count: 0,
+        data
+      });
+      const setPaginationHeaders = sinon.stub(PaginationHelper, 'setPaginationHeaders');
+
+      await listContactNumberType(req, res, next);
+      getItemsPerPage.should.have.been.calledWith(params);
+      getSkipValue.should.have.been.calledWith(params);
+      getSortParams.should.have.been.calledWith(params);
+      getQuery.should.have.been.calledWith(params);
+      listResources.should.have.been.calledWith(query, limit, skip, sortBy);
+      res.statusCode.should.equal(204);
+      setPaginationHeaders.should.not.have.been.called;
+      end.should.have.been.calledWith();
+      next.should.not.have.been.called;
+    });
+
+    it('failure scenario', async () => {
+      const params = {
+        status: {
+          value: 'enabled'
+        }
+      };
+      const req = fakeRequest({
+        swaggerParams: params
+      });
+      const res = fakeResponse();
+      const next = sinon.spy();
+
+      const limit = 5;
+      const skip = 25;
+      const sortBy = ['name'];
+      const query = {sampleQuery: 'ok'};
+      const getItemsPerPage = sinon.stub(QueryHelper, 'getItemsPerPage').returns(limit);
+      const getSkipValue = sinon.stub(QueryHelper, 'getSkipValue').returns(skip);
+      const getSortParams = sinon.stub(QueryHelper, 'getSortParams').returns(sortBy);
+      const getQuery = sinon.stub(QueryHelper, 'getQuery').returns(query);
+      const error = new Error('some error');
+      const listResources = sinon.stub(GenericRepository.prototype, 'listResources').rejects(error);
+
+      await listContactNumberType(req, res, next);
+      getItemsPerPage.should.have.been.calledWith(params);
+      getSkipValue.should.have.been.calledWith(params);
+      getSortParams.should.have.been.calledWith(params);
+      getQuery.should.have.been.calledWith(params);
+      listResources.should.have.been.calledWith(query, limit, skip, sortBy);
+      next.should.have.been.calledWith(error);
     });
   });
 });
