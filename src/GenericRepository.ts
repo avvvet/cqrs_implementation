@@ -3,10 +3,6 @@ import {FilterQuery, LeanDocument, Model} from 'mongoose';
 import {RuntimeError} from 'a24-node-error-utils';
 import {forEach, forIn} from 'lodash';
 
-type ConfigType = {
-  [key: string]: unknown;
-};
-
 type SortByType = {
   [key: string]: string;
 };
@@ -104,7 +100,7 @@ export class GenericRepository<SchemaType> {
     const excludes: string[] = [];
 
     forIn(this.store.schema.obj, (config, field) => {
-      if ((config as ConfigType).http_hidden) {
+      if ((config as {[key: string]: unknown}).http_hidden) {
         excludes.push(field);
       }
     });
