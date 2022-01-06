@@ -241,6 +241,40 @@ paths:
       summary: "Add Client contact number"
       tags:
         - "Client Contact Number"
+    get:
+      x-swagger-router-controller: "ClientContactNumber"
+      operationId: "listClientContactNumber"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/page_filter"
+        - $ref: "#/parameters/items_per_page_filter"
+        - $ref: "#/parameters/list_client_contact_number_sorting"
+      responses:
+        200:
+          description: "List Client Contact Number"
+          headers:
+            link:
+              type: string
+            x-result-count:
+              type: integer
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/client_contact_number_item_def"
+        204:
+          $ref: "#/responses/no_content"
+        400:
+          description: "Validation Error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/get_client_contact_number_list_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "List Client Contact Number"
+      tags:
+        - "Client Contact Number"
   /client/{client_id}/contact-number/{client_contact_number_id}:
     parameters:
       - $ref: "#/parameters/x_request_id"
@@ -270,6 +304,29 @@ paths:
       summary: "Remove Client contact number"
       tags:
         - "Client Contact Number"
+    get:
+      x-swagger-router-controller: "ClientContactNumber"
+      operationId: "getClientContactNumber"
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: "Retrieves a single Client Contact Number"
+          schema:
+            $ref: "#/definitions/client_contact_number_item_def"
+        400:
+          description: "Validation Error. Usually caused by a missing or invalid parameter."
+          schema:
+            $ref: "#/definitions/get_client_contact_number_validation_error_model"
+        401:
+          $ref: "#/responses/unauthorize_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      summary: "Retrieves a single Client Contact Number"
+      tags:
+        - "Client Contact Number"
 parameters:
   # Query PARAMS
   query_contact_number_type_status:
@@ -297,6 +354,16 @@ parameters:
         - "-name"
         - "order"
         - "-order"
+  list_client_contact_number_sorting:
+    name: sortBy
+    in: query
+    type: array
+    default: ["type_order"]
+    items:
+      type: "string"
+      enum:
+        - "type_order"
+        - "-type_order"
   # Route parameters
   empty_payload:
     name: empty_payload
@@ -628,6 +695,39 @@ definitions:
       __v:
         type: integer
     additionalProperties: false 
+  client_contact_number_item_def:
+    type: object
+    required:
+      - _id
+      - type_id
+      - type_name
+      - type_order
+      - contact_number
+      - updated_at
+      - created_at
+      - __v
+    properties:
+      _id:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+      type_id:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+      type_name:
+        type: string
+      type_order:
+        type: integer
+      contact_number:
+        type: string
+      updated_at:
+        type: string
+        format: date-time
+      created_at:
+        type: string
+        format: date-time
+      __v:
+        type: integer
+    additionalProperties: false
   empty_payload_error_model:
     type: object
     required:
@@ -679,7 +779,38 @@ definitions:
       message:
         type: string
     additionalProperties: false
+  get_client_contact_number_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - PATTERN
+          - REQUIRED
+      message:
+        type: string
+    additionalProperties: false
   get_contact_number_type_list_validation_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - PATTERN
+          - ENUM_MISMATCH
+          - INVALID_TYPE
+          - REQUIRED
+          - MINIMUM
+      message:
+        type: string
+    additionalProperties: false
+  get_client_contact_number_list_validation_error_model:
     type: object
     required:
       - code
